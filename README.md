@@ -1,12 +1,19 @@
-# AI Orchestra - Phase 1: Core SDK
+# AI Orchestra - Autonomous Multi-LLM Development System
 
-A lightweight, modular agent composition framework for building autonomous multi-LLM applications.
+A production-ready framework for building distributed, multi-agent AI systems with TypeScript and Python.
 
 ## Overview
 
-AI Orchestra is being built as a hybrid system combining Node/TypeScript for agent logic, Python/FastAPI (with Swarms) for orchestration, and Next.js for the frontend dashboard.
+AI Orchestra is a hybrid system combining:
+- **Node/TypeScript** - Agent logic and LLM connectors (Phase 1)
+- **Python/FastAPI + Swarms** - Distributed orchestration (Phase 2)
+- **Next.js** - Frontend dashboard (Phase 3 - Coming Soon)
 
-**Phase 1** focuses on creating the core SDK - a lightweight, schema-validated agent framework inspired by Atomic-Agents' design philosophy.
+### Current Status
+
+✅ **Phase 1 Complete** - Core SDK with schema-validated agents
+✅ **Phase 2 Complete** - Swarms-powered orchestration service
+⏳ **Phase 3 Planned** - Real-time dashboard and memory system
 
 ## Architecture Philosophy
 
@@ -20,6 +27,7 @@ Pipeline Logic     | Concept-driven      | FE → BE → QA → Debug workflow d
 
 ## Features
 
+### Phase 1: Core SDK
 ✅ **Schema-based validation** - Type-safe input/output using Zod schemas
 ✅ **Modular design** - Single-purpose, composable components
 ✅ **Multi-provider LLM support** - OpenAI, Grok, Ollama, Anthropic (planned)
@@ -27,6 +35,14 @@ Pipeline Logic     | Concept-driven      | FE → BE → QA → Debug workflow d
 ✅ **Tool registration** - Extend agent capabilities with custom tools
 ✅ **Execution lifecycle** - Built-in retry logic and error handling
 ✅ **History tracking** - Full conversation and execution context
+
+### Phase 2: Orchestration
+✅ **Multi-agent workflows** - Sequential, parallel, and graph-based execution
+✅ **Swarms integration** - Enterprise-grade agent orchestration
+✅ **REST API** - FastAPI endpoints for workflow management
+✅ **TypeScript bridge** - Type-safe client for Node.js integration
+✅ **Real-time tracking** - Monitor workflow progress and task status
+✅ **Workflow patterns** - Pre-built templates for common use cases
 
 ## Quick Start
 
@@ -74,7 +90,64 @@ const result = await agent.run({
 console.log(result);
 ```
 
+### Phase 2: Orchestration Quick Start
+
+#### 1. Start the Orchestration Service
+
+```bash
+cd orchestrator
+pip install -r requirements.txt
+cp .env.example .env
+# Add your API keys to .env
+python main.py
+```
+
+The service will start on `http://localhost:8000`
+
+#### 2. Use from TypeScript
+
+```typescript
+import {
+  SwarmInterface,
+  WorkflowPatterns,
+  WorkflowType,
+} from 'ai-orchestra';
+
+// Connect to orchestration service
+const swarm = new SwarmInterface('http://localhost:8000');
+
+// Use pre-built pattern: FE → BE → QA → Debug → QA
+const workflow = WorkflowPatterns.fullStackDevelopment(
+  'User authentication system'
+);
+
+// Submit and monitor
+const result = await workflow.submitAndWait(swarm, 60000, (status) => {
+  console.log(`Status: ${status.status}`);
+  status.tasks.forEach(task => {
+    console.log(`  ${task.agent_role}: ${task.status}`);
+  });
+});
+
+console.log('Workflow complete!', result);
+```
+
+#### 3. Run Examples
+
+```bash
+# Basic orchestration
+npm run dev examples/orchestration-basic.ts
+
+# Full-stack pipeline
+npm run dev examples/orchestration-fullstack.ts
+
+# Parallel execution
+npm run dev examples/orchestration-parallel.ts
+```
+
 ## Core Components
+
+### Phase 1: Core SDK Components
 
 ### BaseAgent
 
@@ -173,26 +246,95 @@ config.updateConfig({
 });
 ```
 
+### Phase 2: Orchestration Components
+
+#### SwarmInterface
+
+TypeScript client for communicating with the orchestration service:
+
+```typescript
+import { SwarmInterface } from 'ai-orchestra';
+
+const swarm = new SwarmInterface('http://localhost:8000');
+
+// Submit workflow
+const status = await swarm.submitWorkflow(workflowRequest);
+
+// Check status
+const current = await swarm.getWorkflowStatus(status.workflow_id);
+
+// Wait for completion
+const final = await swarm.submitAndWait(workflowRequest, 60000);
+```
+
+#### WorkflowBuilder
+
+Fluent API for constructing workflows:
+
+```typescript
+import { WorkflowBuilder, WorkflowType } from 'ai-orchestra';
+
+const workflow = new WorkflowBuilder(WorkflowType.SEQUENTIAL)
+  .addTask('task-1', 'frontend', { task: 'Create UI components' })
+  .addTask('task-2', 'backend', { task: 'Create API endpoints' })
+  .addTask('task-3', 'qa', { task: 'Review code' })
+  .addMetadata('project', 'my-app')
+  .build();
+
+// Or use pre-built patterns
+import { WorkflowPatterns } from 'ai-orchestra';
+
+const fullStack = WorkflowPatterns.fullStackDevelopment('Feature description');
+const codeReview = WorkflowPatterns.parallelCodeReview(code, 'typescript');
+```
+
+#### Workflow Types
+
+```typescript
+// Sequential: Task 1 → Task 2 → Task 3
+WorkflowType.SEQUENTIAL
+
+// Parallel: Tasks 1, 2, 3 run simultaneously
+WorkflowType.PARALLEL
+
+// Graph: Tasks execute based on dependencies
+WorkflowType.GRAPH
+```
+
 ## Project Structure
 
 ```
-AI Orchestra/
-├── src/
+AI-Orchestra/
+├── src/                           # Phase 1: Core SDK (TypeScript)
 │   ├── core/
-│   │   ├── BaseAgent.ts          # Core agent execution template
-│   │   ├── Tool.ts                # Tool builder and common tools
-│   │   ├── ContextProvider.ts     # Context provider implementations
-│   │   ├── Config.ts              # Configuration management
-│   │   └── LLMClient.ts           # Multi-provider LLM abstraction
+│   │   ├── BaseAgent.ts           # Core agent execution template
+│   │   ├── Tool.ts                 # Tool builder and common tools
+│   │   ├── ContextProvider.ts      # Context provider implementations
+│   │   ├── Config.ts               # Configuration management
+│   │   └── LLMClient.ts            # Multi-provider LLM abstraction
+│   ├── orchestrator/
+│   │   └── swarm_interface.ts      # TypeScript bridge to Python service
 │   ├── types/
-│   │   ├── agent.types.ts         # Agent-related types and schemas
-│   │   └── context.types.ts       # Context provider types
+│   │   ├── agent.types.ts          # Agent-related types and schemas
+│   │   └── context.types.ts        # Context provider types
 │   ├── agents/
-│   │   └── CodeReviewAgent.ts     # Example concrete agent
-│   └── index.ts                   # Main exports
+│   │   └── CodeReviewAgent.ts      # Example concrete agent
+│   └── index.ts                    # Main exports
+│
+├── orchestrator/                   # Phase 2: Orchestration Service (Python)
+│   ├── main.py                     # FastAPI application
+│   ├── swarms_integration.py       # Swarms framework integration
+│   ├── requirements.txt            # Python dependencies
+│   ├── .env.example                # Environment template
+│   └── README.md                   # Orchestration docs
+│
 ├── examples/
-│   ├── basic-usage.ts             # Basic usage example
-│   └── custom-agent.ts            # Custom agent creation example
+│   ├── basic-usage.ts              # Phase 1: Basic agent usage
+│   ├── custom-agent.ts             # Phase 1: Custom agent creation
+│   ├── orchestration-basic.ts      # Phase 2: Basic orchestration
+│   ├── orchestration-fullstack.ts  # Phase 2: Full-stack pipeline
+│   └── orchestration-parallel.ts   # Phase 2: Parallel execution
+│
 ├── package.json
 ├── tsconfig.json
 └── README.md
@@ -310,7 +452,7 @@ npm test
 
 ## Roadmap
 
-### Phase 1 - Core SDK ✅ (Current)
+### Phase 1 - Core SDK ✅ Complete
 - [x] BaseAgent execution template
 - [x] Schema-based validation
 - [x] Context providers
@@ -318,19 +460,32 @@ npm test
 - [x] Multi-provider LLM support
 - [x] Configuration management
 
-### Phase 2 - Orchestration (Next)
-- [ ] Integrate Swarms for task scheduling
-- [ ] Agent communication protocols
-- [ ] Dependency management
-- [ ] Concurrent execution
-- [ ] Task queue system
+### Phase 2 - Orchestration ✅ Complete
+- [x] FastAPI orchestration service
+- [x] Swarms framework integration
+- [x] Multi-agent workflows (Sequential, Parallel, Graph)
+- [x] TypeScript bridge (SwarmInterface)
+- [x] Workflow patterns (Full-stack, Code review)
+- [x] Real-time status tracking
+- [x] REST API endpoints
 
-### Phase 3 - Dashboard & Pipeline
+### Phase 3 - Dashboard & Memory (Next)
 - [ ] Next.js frontend dashboard
-- [ ] Real-time agent monitoring
-- [ ] FE → BE → QA → Debug pipeline
+- [ ] Real-time agent monitoring UI
+- [ ] WebSocket integration for live updates
 - [ ] Memory & reflection system
-- [ ] Performance analytics
+- [ ] Performance analytics dashboard
+- [ ] Workflow visualization
+- [ ] Agent marketplace/templates
+
+### Phase 4 - Production Features (Planned)
+- [ ] Redis-backed distributed state
+- [ ] Agent performance metrics
+- [ ] Self-improving agents
+- [ ] Multi-project orchestration
+- [ ] CLI tools
+- [ ] Docker compose setup
+- [ ] CI/CD integration
 
 ## License
 

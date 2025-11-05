@@ -1,7 +1,8 @@
 /**
- * AI Orchestra - Phase 1: Core SDK
+ * AI Orchestra - Core SDK + Orchestration
  *
- * Lightweight, modular agent composition framework inspired by Atomic-Agents
+ * Phase 1: Lightweight, modular agent composition framework inspired by Atomic-Agents
+ * Phase 2: Distributed orchestration powered by Swarms
  */
 
 // Core Classes
@@ -28,6 +29,20 @@ export {
   type LLMRequestOptions,
   type LLMResponse,
 } from './core/LLMClient.js';
+
+// Orchestration (Phase 2)
+export {
+  SwarmInterface,
+  WorkflowBuilder,
+  WorkflowPatterns,
+  WorkflowType,
+  TaskStatus as OrchestrationTaskStatus,
+  WorkflowStatus as OrchestrationWorkflowStatus,
+  type AgentTask,
+  type WorkflowRequest,
+  type TaskStatusResponse,
+  type WorkflowStatusResponse,
+} from './orchestrator/swarm_interface.js';
 
 // Types
 export {
