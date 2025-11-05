@@ -5,15 +5,16 @@ A production-ready framework for building distributed, multi-agent AI systems wi
 ## Overview
 
 AI Orchestra is a hybrid system combining:
-- **Node/TypeScript** - Agent logic and LLM connectors (Phase 1)
+- **Node/TypeScript** - Agent logic and LLM connectors (Phases 1 & 3)
 - **Python/FastAPI + Swarms** - Distributed orchestration (Phase 2)
-- **Next.js** - Frontend dashboard (Phase 3 - Coming Soon)
+- **Next.js** - Frontend dashboard (Phase 4 - Coming Soon)
 
 ### Current Status
 
 ✅ **Phase 1 Complete** - Core SDK with schema-validated agents
 ✅ **Phase 2 Complete** - Swarms-powered orchestration service
-⏳ **Phase 3 Planned** - Real-time dashboard and memory system
+✅ **Phase 3 Complete** - Specialized functional agents (Frontend, Backend, QA, Debugger)
+⏳ **Phase 4 Planned** - Real-time dashboard and memory system
 
 ## Architecture Philosophy
 
@@ -43,6 +44,14 @@ Pipeline Logic     | Concept-driven      | FE → BE → QA → Debug workflow d
 ✅ **TypeScript bridge** - Type-safe client for Node.js integration
 ✅ **Real-time tracking** - Monitor workflow progress and task status
 ✅ **Workflow patterns** - Pre-built templates for common use cases
+
+### Phase 3: Specialized Agents
+✅ **FrontEndDevAgent** - React/Tailwind component generation (Ollama qwen2.5:1.5b)
+✅ **BackEndDevAgent** - Express API route creation (Ollama mistral:7b)
+✅ **QAAgent** - Comprehensive testing and code review (Ollama codellama:13b)
+✅ **DebuggerAgent** - Bug analysis and fixing (Grok xAI)
+✅ **Specialized tools** - Role-specific tools for each agent type
+✅ **Custom configurations** - Tailored prompts and settings per agent
 
 ## Quick Start
 
@@ -143,6 +152,81 @@ npm run dev examples/orchestration-fullstack.ts
 
 # Parallel execution
 npm run dev examples/orchestration-parallel.ts
+```
+
+### Phase 3: Specialized Agents Quick Start
+
+#### 1. Ensure Ollama is Running
+
+The specialized agents use Ollama for local LLM inference:
+
+```bash
+# Install Ollama from https://ollama.ai
+# Pull required models
+ollama pull qwen2.5:1.5b    # For FrontEndDevAgent
+ollama pull mistral:7b       # For BackEndDevAgent
+ollama pull codellama:13b    # For QAAgent
+```
+
+#### 2. Configure Grok API (for DebuggerAgent)
+
+```bash
+# Add Grok API key to .env
+GROK_API_KEY=xai-your-key-here
+```
+
+#### 3. Use Specialized Agents
+
+```typescript
+import { FrontEndDevAgent, BackEndDevAgent, QAAgent, DebuggerAgent } from 'ai-orchestra';
+
+// Generate React component
+const frontendAgent = new FrontEndDevAgent();
+const component = await frontendAgent.run({
+  feature: 'User login form with email and password',
+  componentName: 'LoginForm',
+  styling: 'tailwind',
+});
+
+// Generate API endpoint
+const backendAgent = new BackEndDevAgent();
+const endpoint = await backendAgent.run({
+  feature: 'User authentication endpoint',
+  method: 'POST',
+  route: '/api/auth/login',
+});
+
+// Review code quality
+const qaAgent = new QAAgent();
+const review = await qaAgent.run({
+  testType: 'all',
+  code: yourCode,
+  strictMode: true,
+});
+
+// Fix bugs
+const debuggerAgent = new DebuggerAgent();
+const fix = await debuggerAgent.run({
+  errorMessage: error.message,
+  stackTrace: error.stack,
+  code: problematicCode,
+});
+```
+
+#### 4. Run Phase 3 Examples
+
+```bash
+# Frontend agent examples
+npm run dev examples/phase3-frontend-agent.ts
+
+# Backend agent examples
+npm run dev examples/phase3-backend-agent.ts
+
+# QA agent examples
+npm run dev examples/phase3-qa-agent.ts
+
+# Debugger agent examples
+npm run dev examples/phase3-debugger-agent.ts
 ```
 
 ## Core Components
@@ -301,6 +385,154 @@ WorkflowType.PARALLEL
 WorkflowType.GRAPH
 ```
 
+### Phase 3: Specialized Agent Components
+
+#### FrontEndDevAgent
+
+Generates React/Tailwind components using Ollama qwen2.5:1.5b:
+
+```typescript
+import { FrontEndDevAgent, FrontEndTools } from 'ai-orchestra';
+
+const agent = new FrontEndDevAgent();
+
+// Register specialized tools
+agent.registerTool(FrontEndTools.validateComponent());
+agent.registerTool(FrontEndTools.checkTailwindClasses());
+
+const result = await agent.run({
+  feature: 'Login form with validation',
+  componentName: 'LoginForm',
+  styling: 'tailwind',
+  framework: 'react',
+  typescript: true,
+  accessibility: true,
+  responsive: true,
+});
+
+console.log(result.code);          // Generated component code
+console.log(result.dependencies);  // Required npm packages
+console.log(result.usage);         // Usage example
+```
+
+#### BackEndDevAgent
+
+Creates Express API routes using Ollama mistral:7b:
+
+```typescript
+import { BackEndDevAgent, BackEndTools } from 'ai-orchestra';
+
+const agent = new BackEndDevAgent();
+
+// Register security tools
+agent.registerTool(BackEndTools.validateEndpoint());
+agent.registerTool(BackEndTools.checkSecurity());
+
+const result = await agent.run({
+  feature: 'User authentication endpoint',
+  method: 'POST',
+  route: '/api/auth/login',
+  framework: 'express',
+  database: 'postgresql',
+  authentication: false,  // This IS the auth endpoint
+  validation: true,
+  typescript: true,
+});
+
+console.log(result.code);       // Route handler code
+console.log(result.middleware); // Middleware (auth, validation)
+console.log(result.model);      // Database model
+```
+
+#### QAAgent
+
+Comprehensive testing and code review using Ollama codellama:13b:
+
+```typescript
+import { QAAgent, QATools } from 'ai-orchestra';
+
+const agent = new QAAgent();
+
+// Register QA tools
+agent.registerTool(QATools.runLinter());
+agent.registerTool(QATools.calculateComplexity());
+
+const result = await agent.run({
+  testType: 'all',  // unit, integration, e2e, lint, security, all
+  code: codeToReview,
+  framework: 'jest',
+  coverage: true,
+  strictMode: true,
+});
+
+console.log(result.overallStatus); // pass, fail, warning
+console.log(result.score);         // Quality score 0-10
+console.log(result.issues);        // Array of issues with severity
+console.log(result.testCode);      // Generated test code
+```
+
+#### DebuggerAgent
+
+Bug analysis and fixing using Grok (xAI):
+
+```typescript
+import { DebuggerAgent, DebuggerTools } from 'ai-orchestra';
+
+const agent = new DebuggerAgent();
+
+// Register debugging tools
+agent.registerTool(DebuggerTools.parseStackTrace());
+agent.registerTool(DebuggerTools.analyzeError());
+
+const result = await agent.run({
+  errorMessage: error.message,
+  stackTrace: error.stack,
+  code: problematicCode,
+  qaReport: qaResults,        // Optional: QA findings
+  expectedBehavior: 'Should return user data',
+  actualBehavior: 'Returns undefined',
+  reproducible: true,
+});
+
+console.log(result.diagnosis);   // Root cause analysis
+console.log(result.fixes);       // Array of proposed fixes
+result.fixes.forEach(fix => {
+  console.log(fix.patch);        // Code patch
+  console.log(fix.confidence);   // Confidence level 0-100
+  console.log(fix.impact);       // breaking or non-breaking
+});
+console.log(result.preventionTips);       // How to prevent
+console.log(result.testRecommendations);  // Tests to add
+```
+
+#### Specialized Tools
+
+Each agent type has specialized tools:
+
+```typescript
+import { FrontEndTools, BackEndTools, QATools, DebuggerTools } from 'ai-orchestra';
+
+// Frontend
+FrontEndTools.validateComponent()
+FrontEndTools.checkTailwindClasses()
+FrontEndTools.generateTemplate()
+
+// Backend
+BackEndTools.validateEndpoint()
+BackEndTools.checkSecurity()
+BackEndTools.generateRouteTemplate()
+
+// QA
+QATools.runLinter()
+QATools.calculateComplexity()
+QATools.generateTestTemplate()
+
+// Debugger
+DebuggerTools.parseStackTrace()
+DebuggerTools.analyzeError()
+DebuggerTools.generatePatch()
+```
+
 ## Project Structure
 
 ```
@@ -317,8 +549,12 @@ AI-Orchestra/
 │   ├── types/
 │   │   ├── agent.types.ts          # Agent-related types and schemas
 │   │   └── context.types.ts        # Context provider types
-│   ├── agents/
-│   │   └── CodeReviewAgent.ts      # Example concrete agent
+│   ├── agents/                      # Phase 1 & 3: Agents
+│   │   ├── CodeReviewAgent.ts      # Phase 1: Example agent
+│   │   ├── FrontEndDevAgent.ts     # Phase 3: React/Tailwind generator
+│   │   ├── BackEndDevAgent.ts      # Phase 3: Express API generator
+│   │   ├── QAAgent.ts              # Phase 3: Testing & code review
+│   │   └── DebuggerAgent.ts        # Phase 3: Bug analysis & fixing
 │   └── index.ts                    # Main exports
 │
 ├── orchestrator/                   # Phase 2: Orchestration Service (Python)
@@ -333,7 +569,11 @@ AI-Orchestra/
 │   ├── custom-agent.ts             # Phase 1: Custom agent creation
 │   ├── orchestration-basic.ts      # Phase 2: Basic orchestration
 │   ├── orchestration-fullstack.ts  # Phase 2: Full-stack pipeline
-│   └── orchestration-parallel.ts   # Phase 2: Parallel execution
+│   ├── orchestration-parallel.ts   # Phase 2: Parallel execution
+│   ├── phase3-frontend-agent.ts    # Phase 3: Frontend agent examples
+│   ├── phase3-backend-agent.ts     # Phase 3: Backend agent examples
+│   ├── phase3-qa-agent.ts          # Phase 3: QA agent examples
+│   └── phase3-debugger-agent.ts    # Phase 3: Debugger agent examples
 │
 ├── package.json
 ├── tsconfig.json
@@ -469,7 +709,16 @@ npm test
 - [x] Real-time status tracking
 - [x] REST API endpoints
 
-### Phase 3 - Dashboard & Memory (Next)
+### Phase 3 - Specialized Agents ✅ Complete
+- [x] FrontEndDevAgent (React/Tailwind with Ollama qwen2.5:1.5b)
+- [x] BackEndDevAgent (Express APIs with Ollama mistral:7b)
+- [x] QAAgent (Testing & review with Ollama codellama:13b)
+- [x] DebuggerAgent (Bug fixing with Grok xAI)
+- [x] Specialized tools for each agent type
+- [x] Custom input/output schemas per agent
+- [x] Comprehensive examples for all agents
+
+### Phase 4 - Dashboard & Memory (Next)
 - [ ] Next.js frontend dashboard
 - [ ] Real-time agent monitoring UI
 - [ ] WebSocket integration for live updates
@@ -478,7 +727,7 @@ npm test
 - [ ] Workflow visualization
 - [ ] Agent marketplace/templates
 
-### Phase 4 - Production Features (Planned)
+### Phase 5 - Production Features (Planned)
 - [ ] Redis-backed distributed state
 - [ ] Agent performance metrics
 - [ ] Self-improving agents
@@ -491,6 +740,15 @@ npm test
 
 MIT
 
+## Agent Comparison
+
+| Agent | Model | Provider | Purpose | Input | Output |
+|-------|-------|----------|---------|-------|--------|
+| **FrontEndDevAgent** | qwen2.5:1.5b | Ollama | React/Tailwind UI generation | Feature spec | Component code |
+| **BackEndDevAgent** | mistral:7b | Ollama | Express API creation | Endpoint spec | Route handler |
+| **QAAgent** | codellama:13b | Ollama | Code review & testing | Code/test results | QA report |
+| **DebuggerAgent** | grok-beta | Grok (xAI) | Bug analysis & fixes | Error/stack trace | Fixes & patches |
+
 ## Contributing
 
-Contributions welcome! This is Phase 1 of an ongoing project.
+Contributions welcome! Phase 3 complete - Phase 4 dashboard in progress.

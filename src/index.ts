@@ -1,13 +1,20 @@
 /**
- * AI Orchestra - Core SDK + Orchestration
+ * AI Orchestra - Core SDK + Orchestration + Specialized Agents
  *
  * Phase 1: Lightweight, modular agent composition framework inspired by Atomic-Agents
  * Phase 2: Distributed orchestration powered by Swarms
+ * Phase 3: Specialized functional agents (Frontend, Backend, QA, Debugger)
  */
 
 // Core Classes
 export { BaseAgent } from './core/BaseAgent.js';
 export { ToolBuilder, CommonTools } from './core/Tool.js';
+export {
+  FrontEndTools,
+  BackEndTools,
+  QATools,
+  DebuggerTools,
+} from './core/SpecializedTools.js';
 export {
   StaticContextProvider,
   DynamicContextProvider,
@@ -67,5 +74,27 @@ export {
   type MemoryEntry,
 } from './types/context.types.js';
 
-// Example Agents
+// Phase 1: Example Agent
 export { CodeReviewAgent } from './agents/CodeReviewAgent.js';
+
+// Phase 3: Specialized Functional Agents
+export {
+  FrontEndDevAgent,
+  type FrontEndInput,
+  type FrontEndOutput,
+} from './agents/FrontEndDevAgent.js';
+export {
+  BackEndDevAgent,
+  type BackEndInput,
+  type BackEndOutput,
+} from './agents/BackEndDevAgent.js';
+export {
+  QAAgent,
+  type QAInput,
+  type QAOutput,
+} from './agents/QAAgent.js';
+export {
+  DebuggerAgent,
+  type DebuggerInput,
+  type DebuggerOutput,
+} from './agents/DebuggerAgent.js';
