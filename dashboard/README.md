@@ -1,289 +1,159 @@
-# AI Orchestra Dashboard
+# AI Orchestra Dashboard - FusionForge
 
-Real-time monitoring and management dashboard for AI Orchestra multi-agent development pipeline.
+Modern Next.js dashboard for monitoring and controlling the AI Orchestra system.
 
 ## Features
 
-- **Pipeline Trigger** - Upload feature specifications and start pipeline runs
-- **Live Log Viewer** - Real-time streaming of pipeline execution logs
-- **Artifact Viewer** - Browse and download generated code and reports
-- **Status Dashboard** - Monitor QA iterations, debug cycles, and quality scores
-- **Modern UI** - Built with Next.js 14, React 18, and Tailwind CSS
+- **Real-time Monitoring**: WebSocket-based live updates for logs and system status
+- **Build Pipeline**: Trigger and monitor LLM queries across multiple providers
+- **Agent Management**: View and manage autonomous agents
+- **Artifacts Inspector**: Browse generated files, reports, and patches
+- **Configuration**: Manage providers, models, and system settings
+- **Beautiful UI**: Built with Next.js, Tailwind CSS, and shadcn/ui
 
 ## Quick Start
-
-### Installation
-
-```bash
-cd dashboard
-npm install
-```
-
-### Environment Setup
-
-```bash
-cp .env.example .env
-# Edit .env with your configuration
-```
-
-Required environment variables:
-
-```env
-ORCHESTRATOR_URL=http://localhost:8000
-NEXT_PUBLIC_APP_NAME=AI Orchestra Dashboard
-```
 
 ### Development
 
 ```bash
+cd dashboard
+npm install
 npm run dev
 ```
 
-The dashboard will be available at `http://localhost:3000`
+The dashboard will be available at `http://localhost:3001`
 
-### Production Build
+### Production
 
 ```bash
 npm run build
 npm start
 ```
 
-## Usage
+## Pages
 
-### 1. Upload Feature Specification
+- **/**: Overview dashboard with system metrics
+- **/build**: Build pipeline with LLM query interface
+- **/logs**: Real-time agent logs viewer
+- **/artifacts**: Generated files and artifacts browser
+- **/agents**: Agent status and management
+- **/system**: System health and configuration
+- **/config**: Settings and provider configuration
 
-Click the upload area in the "Pipeline Trigger" card and select a JSON feature specification file. Example:
+## Environment Variables
 
-```json
-{
-  "id": "feature-001",
-  "name": "User Authentication",
-  "description": "Login and registration system",
-  "type": "full-stack",
-  "frontend": {
-    "enabled": true,
-    "components": [
-      {
-        "name": "LoginForm",
-        "description": "User login form",
-        "type": "form"
-      }
-    ],
-    "styling": "tailwind"
-  },
-  "backend": {
-    "enabled": true,
-    "endpoints": [
-      {
-        "method": "POST",
-        "route": "/api/auth/login",
-        "description": "User login endpoint"
-      }
-    ],
-    "framework": "express"
-  }
-}
+Create `.env.local` in the dashboard directory:
+
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:3000
+NEXT_PUBLIC_WS_URL=ws://localhost:3001
 ```
-
-### 2. Run Pipeline
-
-After uploading a feature spec, click the "Run Pipeline" button. The dashboard will:
-
-1. Validate the feature specification
-2. Start the pipeline execution
-3. Begin streaming logs in real-time
-4. Display generated artifacts as they're created
-
-### 3. Monitor Progress
-
-The status dashboard shows:
-
-- **Pipeline Status** - Running, Completed, or Failed
-- **QA Iterations** - Number of QA review cycles
-- **Debug Cycles** - Number of debug attempts
-- **QA Score** - Final quality score (0-10)
-
-### 4. View Logs
-
-The Live Logs tab displays:
-
-- Timestamp for each log entry
-- Log level (info, warn, error)
-- Pipeline stage (frontend, backend, qa, debug)
-- Detailed log messages
-
-### 5. Download Artifacts
-
-The Artifacts tab allows you to:
-
-- View generated code inline
-- Download individual artifacts
-- See which stage generated each artifact
-- Browse all generated files
 
 ## Architecture
 
-```
-dashboard/
-├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── api/                # API routes
-│   │   │   ├── pipeline/       # Pipeline management
-│   │   │   │   ├── run/        # Start pipeline
-│   │   │   │   └── [runId]/    # Get logs and artifacts
-│   │   │   └── health/         # Health check
-│   │   ├── layout.tsx          # Root layout
-│   │   ├── page.tsx            # Main dashboard page
-│   │   └── globals.css         # Global styles
-│   ├── components/             # React components
-│   │   ├── ui/                 # Base UI components
-│   │   │   ├── button.tsx
-│   │   │   ├── card.tsx
-│   │   │   └── tabs.tsx
-│   │   ├── PipelineTrigger.tsx
-│   │   ├── LogViewer.tsx
-│   │   ├── ArtifactViewer.tsx
-│   │   └── StatusDashboard.tsx
-│   └── lib/                    # Utilities
-│       └── utils.ts
-├── package.json
-├── tsconfig.json
-├── next.config.js
-└── tailwind.config.ts
-```
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS + shadcn/ui components
+- **State Management**: Zustand
+- **Real-time**: WebSocket connections
+- **TypeScript**: Full type safety
 
-## API Endpoints
+## Components
 
-### Start Pipeline
+### UI Components (shadcn/ui)
+- Button, Card, Badge, Tabs
+- Dialog, Select, Switch
+- All components in `components/ui/`
 
-```http
-POST /api/pipeline/run
-Content-Type: application/json
+### Custom Components
+- `dashboard-layout.tsx`: Main layout with sidebar and header
+- `sidebar.tsx`: Navigation sidebar
+- `header.tsx`: Top header with search and notifications
 
-{
-  "featureSpec": {
-    "id": "feature-001",
-    "name": "My Feature",
-    ...
-  }
-}
-```
+### Hooks
+- `useWebSocket.ts`: WebSocket connection management
 
-Response:
-
-```json
-{
-  "success": true,
-  "runId": "run-1234567890-abc123",
-  "message": "Pipeline started successfully"
-}
-```
-
-### Get Logs
-
-```http
-GET /api/pipeline/{runId}/logs
-```
-
-Response:
-
-```json
-{
-  "success": true,
-  "logs": [
-    {
-      "timestamp": 1234567890000,
-      "level": "info",
-      "stage": "frontend",
-      "message": "Generating React component..."
-    }
-  ],
-  "status": {
-    "status": "running",
-    "qaIterations": 1,
-    "debugIterations": 0
-  }
-}
-```
-
-### Get Artifacts
-
-```http
-GET /api/pipeline/{runId}/artifacts
-```
-
-Response:
-
-```json
-{
-  "success": true,
-  "artifacts": [
-    {
-      "type": "component",
-      "stage": "frontend",
-      "content": "import React from 'react'...",
-      "path": "./artifacts/component.tsx"
-    }
-  ]
-}
-```
+### State Management
+- `lib/store.ts`: Zustand store for global state
 
 ## Development
 
-### Tech Stack
+### Adding a New Page
 
-- **Framework**: Next.js 14 (App Router)
-- **UI Library**: React 18
-- **Styling**: Tailwind CSS
-- **Components**: Radix UI primitives
-- **Icons**: Lucide React
-- **Type Safety**: TypeScript
+1. Create page in `app/[page-name]/page.tsx`
+2. Wrap with `DashboardLayout`
+3. Add route to `components/sidebar.tsx`
 
-### Adding New Features
+### Adding New Components
 
-1. Create component in `src/components/`
-2. Add API route in `src/app/api/`
-3. Update main page to integrate the feature
-4. Test with feature specifications
+```bash
+# UI components go in components/ui/
+# Custom components go in components/
+```
 
-### Customization
-
-Edit `tailwind.config.ts` to customize colors, fonts, and spacing:
+### State Management
 
 ```typescript
-theme: {
-  extend: {
-    colors: {
-      primary: { DEFAULT: 'hsl(221, 83%, 53%)' },
-      // ... more colors
-    },
-  },
+import { useDashboardStore } from '@/lib/store';
+
+function MyComponent() {
+  const { logs, addLog } = useDashboardStore();
+  // Use state...
 }
 ```
 
-## Docker Deployment
+## WebSocket Events
 
-See the main project's `docker-compose.yml` for deploying the dashboard alongside the orchestrator and Ollama services.
+The dashboard listens for these WebSocket message types:
+
+- `log`: New log entries
+- `status`: System status updates
+- `build`: Build lifecycle events
+- `agent`: Agent status changes
+- `artifact`: New artifacts created
+
+## API Integration
+
+The dashboard communicates with the backend through:
+
+- REST API: `/api/*` endpoints
+- WebSocket: Real-time event stream
+
+See `lib/api.ts` for API client implementation.
+
+## Deployment
+
+### With Docker
+
+The dashboard is included in the main AI Orchestra Docker setup:
+
+```bash
+# From project root
+docker-compose up -d
+```
+
+### Standalone
+
+```bash
+cd dashboard
+npm run build
+npm start
+```
+
+Or use Vercel/Netlify for hosting.
 
 ## Troubleshooting
 
-### Dashboard won't start
+### WebSocket not connecting
 
-- Ensure Node.js 18+ is installed
-- Run `npm install` to install dependencies
-- Check for port conflicts (default: 3000)
+- Ensure backend is running on correct port
+- Check `NEXT_PUBLIC_WS_URL` environment variable
+- Verify firewall settings
 
-### Can't connect to orchestrator
+### API calls failing
 
-- Verify `ORCHESTRATOR_URL` in `.env`
-- Ensure the orchestration service is running on port 8000
-- Check network connectivity
-
-### Logs not updating
-
+- Check `NEXT_PUBLIC_API_URL` points to running backend
+- Enable CORS in backend configuration
 - Check browser console for errors
-- Verify the pipeline run ID is valid
-- Ensure API routes are responding
 
 ## License
 

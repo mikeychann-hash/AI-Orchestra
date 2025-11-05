@@ -1,0 +1,33 @@
+version: '3.8'
+
+# Development override for docker-compose.yml
+# Use with: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  ai-orchestra:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+      - LOG_LEVEL=debug
+    volumes:
+      # Mount source code for hot reload
+      - ./core:/app/core
+      - ./agents:/app/agents
+      - ./api:/app/api
+      - ./dashboard:/app/dashboard
+      - ./server.js:/app/server.js
+      # Don't mount node_modules
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "9229:9229" # Node.js debugger
+
+  ollama:
+    # In development, expose all Ollama ports
+    ports:
+      - "11434:11434"
