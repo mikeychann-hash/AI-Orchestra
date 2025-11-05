@@ -5,9 +5,10 @@ A production-ready framework for building distributed, multi-agent AI systems wi
 ## Overview
 
 AI Orchestra is a hybrid system combining:
-- **Node/TypeScript** - Agent logic and LLM connectors (Phases 1, 3 & 4)
+- **Node/TypeScript** - Agent logic and LLM connectors (Phases 1, 3, 4 & 5)
 - **Python/FastAPI + Swarms** - Distributed orchestration (Phase 2)
-- **Next.js** - Frontend dashboard (Phase 5 - Coming Soon)
+- **Next.js** - Real-time monitoring dashboard (Phase 5)
+- **Docker** - Containerized deployment with Ollama (Phase 5)
 
 ### Current Status
 
@@ -15,7 +16,8 @@ AI Orchestra is a hybrid system combining:
 ✅ **Phase 2 Complete** - Swarms-powered orchestration service
 ✅ **Phase 3 Complete** - Specialized functional agents (Frontend, Backend, QA, Debugger)
 ✅ **Phase 4 Complete** - Full orchestrator pipeline with FE → BE → QA → Debug loop
-⏳ **Phase 5 Planned** - Real-time dashboard and memory system
+✅ **Phase 5 Complete** - Dashboard + LLM connectors + Docker orchestration
+⏳ **Phase 6 Planned** - Memory system and self-improvement
 
 ## Architecture Philosophy
 
@@ -63,7 +65,44 @@ Pipeline Logic     | Concept-driven      | FE → BE → QA → Debug workflow d
 ✅ **Multiple report formats** - Console, JSON, Markdown, and HTML reports
 ✅ **Configurable quality gates** - Min scores, max iterations, auto-fix settings
 
+### Phase 5: Dashboard + Integrations
+✅ **LLM Connectors** - Modular OpenAI, Grok, and Ollama clients with health checks
+✅ **Next.js Dashboard** - Real-time monitoring UI with live logs and artifacts
+✅ **Pipeline Trigger** - Upload feature specs and start runs from the browser
+✅ **Log Viewer** - Live streaming logs with color-coded levels and stages
+✅ **Artifact Viewer** - Browse and download generated code inline
+✅ **Status Dashboard** - Monitor QA iterations, debug cycles, and scores
+✅ **Docker Compose** - Full-stack orchestration (Dashboard + Orchestrator + Ollama)
+✅ **One-command startup** - Launch entire system with `./docker-start.sh`
+
 ## Quick Start
+
+### Option 1: Docker (Recommended)
+
+The fastest way to get AI Orchestra running:
+
+```bash
+# Clone the repository
+git clone <repo-url>
+cd AI-Orchestra
+
+# Copy environment file and add your API keys
+cp .env.example .env
+nano .env  # Add your OPENAI_API_KEY and GROK_API_KEY
+
+# Start everything with one command
+./docker-start.sh
+```
+
+This will:
+1. Start Ollama and pull required models (qwen2.5:1.5b, mistral:7b, codellama:13b)
+2. Start the Python orchestration service
+3. Start the Next.js dashboard
+4. Wait for all services to be healthy
+
+Access the dashboard at `http://localhost:3000`
+
+### Option 2: Manual Setup
 
 ### Installation
 
@@ -803,6 +842,11 @@ AI-Orchestra/
 │   │   ├── Config.ts                # Configuration management
 │   │   ├── LLMClient.ts             # Multi-provider LLM abstraction
 │   │   └── SpecializedTools.ts      # Phase 3: Role-specific tools
+│   ├── connectors/                   # Phase 5: LLM Provider Connectors
+│   │   ├── openai.ts                # OpenAI client implementation
+│   │   ├── grok.ts                  # Grok (xAI) client implementation
+│   │   ├── ollama.ts                # Ollama client implementation
+│   │   └── index.ts                 # Connector exports
 │   ├── orchestrator/
 │   │   └── swarm_interface.ts       # Phase 2: TypeScript bridge to Python service
 │   ├── types/
@@ -821,11 +865,35 @@ AI-Orchestra/
 │   │   └── PipelineReporter.ts      # Multi-format report generation
 │   └── index.ts                     # Main exports
 │
+├── dashboard/                       # Phase 5: Next.js Dashboard
+│   ├── src/
+│   │   ├── app/                     # Next.js App Router
+│   │   │   ├── api/                 # API routes
+│   │   │   │   ├── pipeline/        # Pipeline management endpoints
+│   │   │   │   └── health/          # Health check
+│   │   │   ├── layout.tsx           # Root layout
+│   │   │   ├── page.tsx             # Main dashboard page
+│   │   │   └── globals.css          # Global styles
+│   │   ├── components/              # React components
+│   │   │   ├── ui/                  # Base UI components (button, card, tabs)
+│   │   │   ├── PipelineTrigger.tsx  # Upload and start pipeline
+│   │   │   ├── LogViewer.tsx        # Real-time log streaming
+│   │   │   ├── ArtifactViewer.tsx   # Browse generated artifacts
+│   │   │   └── StatusDashboard.tsx  # Pipeline status monitor
+│   │   └── lib/
+│   │       └── utils.ts             # Utility functions
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── next.config.js
+│   ├── tailwind.config.ts
+│   ├── Dockerfile                   # Dashboard container
+│   └── README.md
+│
 ├── orchestrator/                    # Phase 2: Orchestration Service (Python)
 │   ├── main.py                      # FastAPI application
 │   ├── swarms_integration.py        # Swarms framework integration
 │   ├── requirements.txt             # Python dependencies
-│   ├── .env.example                 # Environment template
+│   ├── Dockerfile                   # Orchestrator container
 │   └── README.md                    # Orchestration docs
 │
 ├── feature-specs/                   # Phase 4: Feature Specifications
@@ -845,6 +913,9 @@ AI-Orchestra/
 │   ├── phase4-pipeline-basic.ts     # Phase 4: Basic pipeline
 │   └── phase4-pipeline-fullstack.ts # Phase 4: Full-stack with reporting
 │
+├── docker-compose.yml               # Phase 5: Full stack orchestration
+├── docker-start.sh                  # Phase 5: One-command startup script
+├── .env.example                     # Environment variables template
 ├── package.json
 ├── tsconfig.json
 └── README.md
@@ -1000,23 +1071,36 @@ npm test
 - [x] Example feature specs (auth, todo app)
 - [x] Pipeline examples with detailed reporting
 
-### Phase 5 - Dashboard & Memory (Next)
-- [ ] Next.js frontend dashboard
-- [ ] Real-time agent monitoring UI
-- [ ] WebSocket integration for live updates
-- [ ] Memory & reflection system
-- [ ] Performance analytics dashboard
-- [ ] Workflow visualization
-- [ ] Agent marketplace/templates
+### Phase 5 - Dashboard & Integrations ✅ Complete
+- [x] Modular LLM provider connectors (OpenAI, Grok, Ollama)
+- [x] Next.js frontend dashboard (App Router)
+- [x] Real-time pipeline monitoring UI
+- [x] Live log streaming with color-coded levels
+- [x] Artifact viewer with inline browsing and downloads
+- [x] Status dashboard (QA iterations, debug cycles, scores)
+- [x] Pipeline trigger via file upload
+- [x] Docker Compose full-stack orchestration
+- [x] One-command startup script
+- [x] Health checks for all services
+- [x] Comprehensive dashboard documentation
 
-### Phase 6 - Production Features (Planned)
-- [ ] Redis-backed distributed state
-- [ ] Agent performance metrics
+### Phase 6 - Memory & Self-Improvement (Next)
+- [ ] Memory & reflection system
+- [ ] Agent learning from past runs
+- [ ] Performance analytics and metrics
 - [ ] Self-improving agents
+- [ ] Workflow visualization graph
+- [ ] Agent marketplace/templates
+- [ ] Context-aware suggestions
+
+### Phase 7 - Production Features (Planned)
+- [ ] Redis-backed distributed state
+- [ ] WebSocket for real-time updates
 - [ ] Multi-project orchestration
-- [ ] CLI tools
-- [ ] Docker compose setup
+- [ ] Advanced CLI tools
+- [ ] Kubernetes deployment
 - [ ] CI/CD integration
+- [ ] Monitoring and alerting
 
 ## License
 
@@ -1033,4 +1117,4 @@ MIT
 
 ## Contributing
 
-Contributions welcome! Phase 4 complete - Phase 5 dashboard in progress.
+Contributions welcome! Phase 5 complete - Phase 6 memory system in progress.

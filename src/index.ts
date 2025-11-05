@@ -113,3 +113,8 @@ export {
   FeatureSpecSchema,
   PipelineConfigSchema,
 } from './types/pipeline.types.js';
+
+// Phase 5: LLM Provider Connectors
+export { OpenAIClient } from './connectors/openai.js';
+export { GrokClient } from './connectors/grok.js';
+export { OllamaClient, type OllamaModel } from './connectors/ollama.js';
