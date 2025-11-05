@@ -4,26 +4,30 @@
 
 AI Orchestra is a powerful framework that combines multiple LLM providers (OpenAI, Grok, Ollama) with distributed agent orchestration to create an autonomous development system.
 
-## 🚀 Phase 6 Complete - Integrations, Connectors, and Docker Deployment
+## 🚀 Phase 7 Complete - FusionForge Web Dashboard
 
 This release includes:
-- ✅ Multi-provider LLM connectors (OpenAI, Grok, Ollama)
-- ✅ Unified LLM bridge with load balancing and fallback
-- ✅ GitHub integration utilities
-- ✅ Complete Docker deployment setup
-- ✅ Comprehensive configuration management
-- ✅ Testing utilities and integration tests
+- ✅ **Phase 6**: Multi-provider LLM connectors (OpenAI, Grok, Ollama)
+- ✅ **Phase 6**: Unified LLM bridge with load balancing and fallback
+- ✅ **Phase 6**: GitHub integration utilities
+- ✅ **Phase 6**: Complete Docker deployment setup
+- ✅ **Phase 7**: Modern Next.js dashboard with real-time monitoring
+- ✅ **Phase 7**: Build pipeline interface for triggering LLM queries
+- ✅ **Phase 7**: Live agent logs viewer with WebSocket updates
+- ✅ **Phase 7**: Artifacts inspector and configuration management
 
 ## 🎯 Features
 
 - **Multi-LLM Support**: Seamlessly integrate OpenAI, Grok (xAI), and Ollama
 - **Intelligent Load Balancing**: Round-robin, random, or default provider selection
 - **Automatic Fallback**: Graceful degradation when providers fail
+- **FusionForge Dashboard**: Beautiful Next.js web interface with real-time monitoring
+- **Build Pipeline**: Interactive interface for triggering and monitoring LLM queries
+- **Live Logs**: Real-time agent logs with filtering and WebSocket updates
+- **Artifacts Management**: Browse and download generated files and reports
 - **Docker Deployment**: One-command deployment with Docker Compose
 - **GitHub Integration**: Built-in utilities for GitHub API interactions
 - **Flexible Configuration**: Environment variables and JSON-based settings
-- **Health Monitoring**: Built-in health checks and monitoring
-- **WebSocket Support**: Real-time communication with agents
 
 ## 📋 Prerequisites
 
@@ -52,6 +56,9 @@ docker-compose up -d
 
 # View logs
 docker-compose logs -f
+
+# Access the dashboard
+open http://localhost:3001
 ```
 
 ### Option 2: Quick Start Script
@@ -133,6 +140,22 @@ Advanced configuration in `config/settings.json`:
   }
 }
 ```
+
+## 🎨 Dashboard
+
+The FusionForge Dashboard provides a modern web interface for monitoring and controlling AI Orchestra:
+
+- **Overview**: System metrics, recent builds, and activity feed
+- **Build Pipeline**: Trigger new builds with customizable parameters
+- **Agent Logs**: Real-time log streaming with filtering
+- **Artifacts**: Browse generated files and reports
+- **Agents**: Monitor autonomous agent status
+- **System**: Health metrics and configuration
+- **Configuration**: Manage providers and settings
+
+Access the dashboard at `http://localhost:3001` after starting the services.
+
+See [Dashboard Documentation](docs/DASHBOARD.md) for details.
 
 ## 🔌 API Endpoints
 
@@ -221,8 +244,10 @@ docker-compose ps
 
 ## 📚 Documentation
 
+- [Dashboard Guide](docs/DASHBOARD.md) - Complete dashboard documentation
 - [Deployment Guide](docs/DEPLOYMENT.md) - Complete deployment instructions
 - [Architecture Overview](AI%20Orchestra.md) - System architecture and design
+- [Dashboard README](dashboard/README.md) - Dashboard development guide
 - Configuration Reference - See `config/.env.example`
 
 ## 🏗️ Project Structure
