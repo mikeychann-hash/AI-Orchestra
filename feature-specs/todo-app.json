@@ -1,0 +1,87 @@
+{
+  "id": "feature-todo-001",
+  "name": "Todo List Application",
+  "description": "Simple todo list with create, read, update, delete operations and task completion tracking",
+  "type": "full-stack",
+  "frontend": {
+    "enabled": true,
+    "components": [
+      {
+        "name": "TodoList",
+        "description": "Main todo list component displaying all tasks with filters",
+        "type": "component"
+      },
+      {
+        "name": "TodoItem",
+        "description": "Individual todo item with checkbox, edit, and delete buttons",
+        "type": "component"
+      },
+      {
+        "name": "TodoForm",
+        "description": "Form to add new todos with title and description",
+        "type": "form"
+      }
+    ],
+    "styling": "tailwind",
+    "framework": "react",
+    "requirements": [
+      "Filter by completed/active/all",
+      "Inline editing of todos",
+      "Drag and drop reordering",
+      "Responsive design"
+    ]
+  },
+  "backend": {
+    "enabled": true,
+    "endpoints": [
+      {
+        "method": "GET",
+        "route": "/api/todos",
+        "description": "Get all todos for authenticated user with optional filters",
+        "authentication": true
+      },
+      {
+        "method": "POST",
+        "route": "/api/todos",
+        "description": "Create a new todo",
+        "authentication": true
+      },
+      {
+        "method": "PUT",
+        "route": "/api/todos/:id",
+        "description": "Update a todo",
+        "authentication": true
+      },
+      {
+        "method": "DELETE",
+        "route": "/api/todos/:id",
+        "description": "Delete a todo",
+        "authentication": true
+      }
+    ],
+    "framework": "express",
+    "database": "postgresql",
+    "requirements": [
+      "Validate todo input",
+      "Check user ownership before update/delete",
+      "Support pagination for large lists"
+    ]
+  },
+  "testing": {
+    "enabled": true,
+    "types": ["unit", "integration"],
+    "coverage": 80,
+    "strictMode": false
+  },
+  "quality": {
+    "maxQAIterations": 2,
+    "autoFix": true,
+    "minScore": 7
+  },
+  "metadata": {
+    "priority": "medium",
+    "estimatedHours": 4,
+    "tags": ["crud", "productivity"],
+    "author": "AI Orchestra"
+  }
+}

@@ -1,9 +1,10 @@
 /**
- * AI Orchestra - Core SDK + Orchestration + Specialized Agents
+ * AI Orchestra - Core SDK + Orchestration + Specialized Agents + Pipeline
  *
  * Phase 1: Lightweight, modular agent composition framework inspired by Atomic-Agents
  * Phase 2: Distributed orchestration powered by Swarms
  * Phase 3: Specialized functional agents (Frontend, Backend, QA, Debugger)
+ * Phase 4: Full orchestrator pipeline integration
  */
 
 // Core Classes
@@ -98,3 +99,17 @@ export {
   type DebuggerInput,
   type DebuggerOutput,
 } from './agents/DebuggerAgent.js';
+
+// Phase 4: Pipeline Integration
+export { PipelineController } from './pipeline/PipelineController.js';
+export { FeatureSpecLoader } from './pipeline/FeatureSpecLoader.js';
+export { PipelineReporter } from './pipeline/PipelineReporter.js';
+export {
+  type FeatureSpec,
+  type PipelineConfig,
+  type PipelineRunResult,
+  type StageResult,
+  PipelineStage,
+  FeatureSpecSchema,
+  PipelineConfigSchema,
+} from './types/pipeline.types.js';

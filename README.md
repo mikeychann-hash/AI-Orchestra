@@ -5,16 +5,17 @@ A production-ready framework for building distributed, multi-agent AI systems wi
 ## Overview
 
 AI Orchestra is a hybrid system combining:
-- **Node/TypeScript** - Agent logic and LLM connectors (Phases 1 & 3)
+- **Node/TypeScript** - Agent logic and LLM connectors (Phases 1, 3 & 4)
 - **Python/FastAPI + Swarms** - Distributed orchestration (Phase 2)
-- **Next.js** - Frontend dashboard (Phase 4 - Coming Soon)
+- **Next.js** - Frontend dashboard (Phase 5 - Coming Soon)
 
 ### Current Status
 
 ✅ **Phase 1 Complete** - Core SDK with schema-validated agents
 ✅ **Phase 2 Complete** - Swarms-powered orchestration service
 ✅ **Phase 3 Complete** - Specialized functional agents (Frontend, Backend, QA, Debugger)
-⏳ **Phase 4 Planned** - Real-time dashboard and memory system
+✅ **Phase 4 Complete** - Full orchestrator pipeline with FE → BE → QA → Debug loop
+⏳ **Phase 5 Planned** - Real-time dashboard and memory system
 
 ## Architecture Philosophy
 
@@ -52,6 +53,15 @@ Pipeline Logic     | Concept-driven      | FE → BE → QA → Debug workflow d
 ✅ **DebuggerAgent** - Bug analysis and fixing (Grok xAI)
 ✅ **Specialized tools** - Role-specific tools for each agent type
 ✅ **Custom configurations** - Tailored prompts and settings per agent
+
+### Phase 4: Full Pipeline Integration
+✅ **PipelineController** - Orchestrates complete FE → BE → QA → Debug → QA workflow
+✅ **Feature specifications** - JSON-based feature specs with frontend/backend/testing config
+✅ **Concurrent execution** - Parallel Frontend + Backend generation
+✅ **QA/Debug loop** - Automatic bug fixing and re-validation until passing
+✅ **Artifact aggregation** - Saves all generated code, reports, and logs
+✅ **Multiple report formats** - Console, JSON, Markdown, and HTML reports
+✅ **Configurable quality gates** - Min scores, max iterations, auto-fix settings
 
 ## Quick Start
 
@@ -227,6 +237,123 @@ npm run dev examples/phase3-qa-agent.ts
 
 # Debugger agent examples
 npm run dev examples/phase3-debugger-agent.ts
+```
+
+### Phase 4: Full Pipeline Quick Start
+
+#### 1. Create a Feature Specification
+
+Create a JSON file defining your feature (or use one of the provided examples):
+
+```json
+{
+  "id": "feature-auth-001",
+  "name": "User Authentication System",
+  "description": "Complete user authentication with login and registration",
+  "type": "full-stack",
+  "frontend": {
+    "enabled": true,
+    "components": [
+      {
+        "name": "LoginForm",
+        "description": "Login form with email and password",
+        "type": "form"
+      }
+    ],
+    "styling": "tailwind",
+    "framework": "react"
+  },
+  "backend": {
+    "enabled": true,
+    "endpoints": [
+      {
+        "method": "POST",
+        "route": "/api/auth/login",
+        "description": "Login user with email and password",
+        "authentication": false
+      }
+    ],
+    "framework": "express",
+    "database": "postgresql"
+  },
+  "quality": {
+    "maxQAIterations": 3,
+    "autoFix": true,
+    "minScore": 8
+  }
+}
+```
+
+#### 2. Run the Pipeline
+
+```typescript
+import {
+  PipelineController,
+  FeatureSpecLoader,
+  PipelineReporter
+} from 'ai-orchestra';
+
+// Load feature spec
+const featureSpec = await FeatureSpecLoader.fromFile('./feature-specs/user-authentication.json');
+
+// Create pipeline with configuration
+const pipeline = new PipelineController({
+  maxQAIterations: 3,
+  maxDebugIterations: 2,
+  continueOnWarnings: true,
+  parallelExecution: true,
+  saveArtifacts: true,
+  verbose: true,
+  artifactsPath: './pipeline-artifacts',
+});
+
+// Run the complete pipeline
+const result = await pipeline.run(featureSpec);
+
+// Generate reports
+console.log(PipelineReporter.generateConsoleReport(result));
+
+// Save reports to files
+await fs.writeFile('report.md', PipelineReporter.generateMarkdownReport(result));
+await fs.writeFile('report.html', PipelineReporter.generateHTMLReport(result));
+await fs.writeFile('report.json', PipelineReporter.generateJSONReport(result));
+```
+
+#### 3. Pipeline Flow
+
+The pipeline automatically executes these stages:
+
+1. **Frontend Generation** - Generates React components (parallel with Backend)
+2. **Backend Generation** - Creates Express API routes (parallel with Frontend)
+3. **QA Review** - Analyzes all generated code, finds issues, assigns quality score
+4. **Debug Loop** (if QA fails):
+   - Debugger fixes issues
+   - QA re-reviews code
+   - Repeats until passing or max iterations reached
+5. **Artifact Aggregation** - Saves all code, logs, and reports
+
+#### 4. Run Phase 4 Examples
+
+```bash
+# Basic pipeline example
+npm run dev examples/phase4-pipeline-basic.ts
+
+# Full-stack pipeline with detailed reporting
+npm run dev examples/phase4-pipeline-fullstack.ts
+```
+
+#### 5. View Generated Artifacts
+
+After running the pipeline, find your artifacts:
+
+```bash
+# Generated code and artifacts
+./pipeline-artifacts/<run-id>/
+
+# Reports
+./pipeline-reports/<feature-id>-<run-id>.md
+./pipeline-reports/<feature-id>-<run-id>.html
+./pipeline-reports/<feature-id>-<run-id>.json
 ```
 
 ## Core Components
@@ -533,47 +660,190 @@ DebuggerTools.analyzeError()
 DebuggerTools.generatePatch()
 ```
 
+### Phase 4: Pipeline Components
+
+#### PipelineController
+
+Orchestrates the complete development pipeline:
+
+```typescript
+import { PipelineController, FeatureSpec } from 'ai-orchestra';
+
+const pipeline = new PipelineController({
+  maxQAIterations: 3,           // Max QA/Debug loop iterations
+  maxDebugIterations: 2,         // Max debug attempts per QA failure
+  continueOnWarnings: true,      // Continue if QA gives warnings
+  parallelExecution: true,       // Run FE+BE in parallel
+  saveArtifacts: true,           // Save generated code to disk
+  verbose: true,                 // Detailed logging
+  artifactsPath: './artifacts',  // Where to save artifacts
+});
+
+// Run the pipeline
+const result = await pipeline.run(featureSpec);
+
+console.log(result.status);          // 'completed', 'failed', 'running'
+console.log(result.qaIterations);    // Number of QA iterations
+console.log(result.debugIterations); // Number of debug iterations
+console.log(result.finalScore);      // Final QA score
+console.log(result.artifacts);       // All generated files
+```
+
+#### FeatureSpecLoader
+
+Load and create feature specifications:
+
+```typescript
+import { FeatureSpecLoader } from 'ai-orchestra';
+
+// Load from JSON file
+const spec = await FeatureSpecLoader.fromFile('./feature-specs/auth.json');
+
+// Create from JSON string
+const spec = FeatureSpecLoader.fromJSON(jsonString);
+
+// Create from object
+const spec = FeatureSpecLoader.fromObject({
+  id: 'feature-1',
+  name: 'My Feature',
+  // ...
+});
+
+// Create simple spec programmatically
+const spec = FeatureSpecLoader.createSimple(
+  'User Dashboard',
+  'Dashboard showing user data and analytics',
+  {
+    type: 'full-stack',
+    enableFrontend: true,
+    enableBackend: true,
+    maxQAIterations: 3,
+  }
+);
+
+// Save to file
+await FeatureSpecLoader.saveToFile(spec, './feature-specs/dashboard.json');
+```
+
+#### PipelineReporter
+
+Generate reports in multiple formats:
+
+```typescript
+import { PipelineReporter } from 'ai-orchestra';
+
+// Console report (colored, formatted)
+const consoleReport = PipelineReporter.generateConsoleReport(result);
+console.log(consoleReport);
+
+// Markdown report (documentation-friendly)
+const markdown = PipelineReporter.generateMarkdownReport(result);
+await fs.writeFile('report.md', markdown);
+
+// HTML report (browser-viewable with styling)
+const html = PipelineReporter.generateHTMLReport(result);
+await fs.writeFile('report.html', html);
+
+// JSON report (machine-readable)
+const json = PipelineReporter.generateJSONReport(result);
+await fs.writeFile('report.json', json);
+```
+
+#### Pipeline Run Result
+
+The pipeline returns a comprehensive result object:
+
+```typescript
+interface PipelineRunResult {
+  runId: string;                    // Unique run identifier
+  featureId: string;                // Feature spec ID
+  status: 'running' | 'completed' | 'failed';
+  startTime: number;                // Unix timestamp
+  endTime?: number;                 // Unix timestamp
+  totalDuration?: number;           // Milliseconds
+
+  stages: StageResult[];            // Results for each stage
+  qaIterations: number;             // Number of QA iterations
+  debugIterations: number;          // Number of debug iterations
+  finalScore?: number;              // Final QA score (0-10)
+
+  summary: {
+    frontendGenerated: boolean;
+    backendGenerated: boolean;
+    qaScore?: number;
+    issuesFound: number;
+    issuesFixed: number;
+  };
+
+  artifacts: Array<{
+    type: string;
+    stage: string;
+    path?: string;
+    content?: string;
+  }>;
+
+  logs: Array<{
+    timestamp: number;
+    level: 'info' | 'warn' | 'error';
+    stage: string;
+    message: string;
+  }>;
+}
+```
+
 ## Project Structure
 
 ```
 AI-Orchestra/
-├── src/                           # Phase 1: Core SDK (TypeScript)
+├── src/                             # Phase 1: Core SDK (TypeScript)
 │   ├── core/
-│   │   ├── BaseAgent.ts           # Core agent execution template
-│   │   ├── Tool.ts                 # Tool builder and common tools
-│   │   ├── ContextProvider.ts      # Context provider implementations
-│   │   ├── Config.ts               # Configuration management
-│   │   └── LLMClient.ts            # Multi-provider LLM abstraction
+│   │   ├── BaseAgent.ts             # Core agent execution template
+│   │   ├── Tool.ts                  # Tool builder and common tools
+│   │   ├── ContextProvider.ts       # Context provider implementations
+│   │   ├── Config.ts                # Configuration management
+│   │   ├── LLMClient.ts             # Multi-provider LLM abstraction
+│   │   └── SpecializedTools.ts      # Phase 3: Role-specific tools
 │   ├── orchestrator/
-│   │   └── swarm_interface.ts      # TypeScript bridge to Python service
+│   │   └── swarm_interface.ts       # Phase 2: TypeScript bridge to Python service
 │   ├── types/
-│   │   ├── agent.types.ts          # Agent-related types and schemas
-│   │   └── context.types.ts        # Context provider types
-│   ├── agents/                      # Phase 1 & 3: Agents
-│   │   ├── CodeReviewAgent.ts      # Phase 1: Example agent
-│   │   ├── FrontEndDevAgent.ts     # Phase 3: React/Tailwind generator
-│   │   ├── BackEndDevAgent.ts      # Phase 3: Express API generator
-│   │   ├── QAAgent.ts              # Phase 3: Testing & code review
-│   │   └── DebuggerAgent.ts        # Phase 3: Bug analysis & fixing
-│   └── index.ts                    # Main exports
+│   │   ├── agent.types.ts           # Agent-related types and schemas
+│   │   ├── context.types.ts         # Context provider types
+│   │   └── pipeline.types.ts        # Phase 4: Pipeline types and schemas
+│   ├── agents/                       # Phase 1 & 3: Agents
+│   │   ├── CodeReviewAgent.ts       # Phase 1: Example agent
+│   │   ├── FrontEndDevAgent.ts      # Phase 3: React/Tailwind generator
+│   │   ├── BackEndDevAgent.ts       # Phase 3: Express API generator
+│   │   ├── QAAgent.ts               # Phase 3: Testing & code review
+│   │   └── DebuggerAgent.ts         # Phase 3: Bug analysis & fixing
+│   ├── pipeline/                     # Phase 4: Pipeline System
+│   │   ├── PipelineController.ts    # Main pipeline orchestrator
+│   │   ├── FeatureSpecLoader.ts     # Feature spec loading & validation
+│   │   └── PipelineReporter.ts      # Multi-format report generation
+│   └── index.ts                     # Main exports
 │
-├── orchestrator/                   # Phase 2: Orchestration Service (Python)
-│   ├── main.py                     # FastAPI application
-│   ├── swarms_integration.py       # Swarms framework integration
-│   ├── requirements.txt            # Python dependencies
-│   ├── .env.example                # Environment template
-│   └── README.md                   # Orchestration docs
+├── orchestrator/                    # Phase 2: Orchestration Service (Python)
+│   ├── main.py                      # FastAPI application
+│   ├── swarms_integration.py        # Swarms framework integration
+│   ├── requirements.txt             # Python dependencies
+│   ├── .env.example                 # Environment template
+│   └── README.md                    # Orchestration docs
+│
+├── feature-specs/                   # Phase 4: Feature Specifications
+│   ├── user-authentication.json     # Example: Auth system
+│   └── todo-app.json                # Example: Todo application
 │
 ├── examples/
-│   ├── basic-usage.ts              # Phase 1: Basic agent usage
-│   ├── custom-agent.ts             # Phase 1: Custom agent creation
-│   ├── orchestration-basic.ts      # Phase 2: Basic orchestration
-│   ├── orchestration-fullstack.ts  # Phase 2: Full-stack pipeline
-│   ├── orchestration-parallel.ts   # Phase 2: Parallel execution
-│   ├── phase3-frontend-agent.ts    # Phase 3: Frontend agent examples
-│   ├── phase3-backend-agent.ts     # Phase 3: Backend agent examples
-│   ├── phase3-qa-agent.ts          # Phase 3: QA agent examples
-│   └── phase3-debugger-agent.ts    # Phase 3: Debugger agent examples
+│   ├── basic-usage.ts               # Phase 1: Basic agent usage
+│   ├── custom-agent.ts              # Phase 1: Custom agent creation
+│   ├── orchestration-basic.ts       # Phase 2: Basic orchestration
+│   ├── orchestration-fullstack.ts   # Phase 2: Full-stack pipeline
+│   ├── orchestration-parallel.ts    # Phase 2: Parallel execution
+│   ├── phase3-frontend-agent.ts     # Phase 3: Frontend agent examples
+│   ├── phase3-backend-agent.ts      # Phase 3: Backend agent examples
+│   ├── phase3-qa-agent.ts           # Phase 3: QA agent examples
+│   ├── phase3-debugger-agent.ts     # Phase 3: Debugger agent examples
+│   ├── phase4-pipeline-basic.ts     # Phase 4: Basic pipeline
+│   └── phase4-pipeline-fullstack.ts # Phase 4: Full-stack with reporting
 │
 ├── package.json
 ├── tsconfig.json
@@ -718,7 +988,19 @@ npm test
 - [x] Custom input/output schemas per agent
 - [x] Comprehensive examples for all agents
 
-### Phase 4 - Dashboard & Memory (Next)
+### Phase 4 - Full Pipeline Integration ✅ Complete
+- [x] PipelineController with complete FE → BE → QA → Debug workflow
+- [x] Feature specification system (JSON-based)
+- [x] Concurrent Frontend + Backend generation
+- [x] QA/Debug loop with configurable iterations
+- [x] Artifact aggregation and saving
+- [x] Multi-format reporting (Console, JSON, Markdown, HTML)
+- [x] Configurable quality gates and auto-fix
+- [x] Comprehensive logging and status tracking
+- [x] Example feature specs (auth, todo app)
+- [x] Pipeline examples with detailed reporting
+
+### Phase 5 - Dashboard & Memory (Next)
 - [ ] Next.js frontend dashboard
 - [ ] Real-time agent monitoring UI
 - [ ] WebSocket integration for live updates
@@ -727,7 +1009,7 @@ npm test
 - [ ] Workflow visualization
 - [ ] Agent marketplace/templates
 
-### Phase 5 - Production Features (Planned)
+### Phase 6 - Production Features (Planned)
 - [ ] Redis-backed distributed state
 - [ ] Agent performance metrics
 - [ ] Self-improving agents
@@ -751,4 +1033,4 @@ MIT
 
 ## Contributing
 
-Contributions welcome! Phase 3 complete - Phase 4 dashboard in progress.
+Contributions welcome! Phase 4 complete - Phase 5 dashboard in progress.
