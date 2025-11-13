@@ -16,6 +16,8 @@ import { ConfigManager } from './core/config_manager.js';
 import { LLMBridge } from './core/llm_bridge.js';
 import { GitHubIntegration } from './core/integrations/github_integration.js';
 import { createLogger, format, transports } from 'winston';
+import { getCsrfToken, csrfProtection, validateOrigin } from './middleware/csrf.js';
+import { cookieParser, enableCookieResponse } from './middleware/cookieParser.js';
 
 // Initialize configuration
 const configManager = new ConfigManager();
@@ -129,6 +131,20 @@ if (config.security?.rateLimiting?.enabled) {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Cookie parsing middleware
+app.use(cookieParser);
+app.use(enableCookieResponse);
+
+// Define allowed origins for CSRF protection
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  config.security?.cors?.origin,
+].filter(Boolean);
+
+// Origin validation for all routes
+app.use(validateOrigin(allowedOrigins));
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -259,6 +275,9 @@ app.get('/health/detailed', async (req, res) => {
   res.json(detailedHealth);
 });
 
+// CSRF token endpoint (must be before protected routes)
+app.get('/api/csrf-token', getCsrfToken);
+
 // API Routes
 app.get('/api/status', (req, res) => {
   const stats = llmBridge.getStats();
@@ -281,7 +300,7 @@ app.get('/api/providers', (req, res) => {
   res.json({ providers });
 });
 
-app.post('/api/query', async (req, res) => {
+app.post('/api/query', csrfProtection, async (req, res) => {
   const start = Date.now();
   const { prompt, provider, model, temperature, maxTokens } = req.body;
 
@@ -350,7 +369,7 @@ app.post('/api/query', async (req, res) => {
   }
 });
 
-app.post('/api/stream', async (req, res) => {
+app.post('/api/stream', csrfProtection, async (req, res) => {
   const start = Date.now();
   const { prompt, provider, model, temperature, maxTokens } = req.body;
 
