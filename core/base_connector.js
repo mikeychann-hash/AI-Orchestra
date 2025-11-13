@@ -36,7 +36,7 @@ export class BaseConnector {
    * @param {Object} options - Query options
    * @returns {AsyncGenerator} Async generator yielding response chunks
    */
-  async *streamQuery(options) {
+  streamQuery(options) {
     throw new Error('streamQuery() must be implemented by connector');
   }
 

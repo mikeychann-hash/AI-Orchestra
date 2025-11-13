@@ -12,8 +12,8 @@ export class LLMBridge {
   constructor(config = {}) {
     this.config = config;
     this.connectors = new Map();
-    this.defaultProvider = config.defaultProvider || 'openai';
-    this.loadBalancing = config.loadBalancing || 'round-robin';
+    this.defaultProvider = (config && config.defaultProvider) || 'openai';
+    this.loadBalancing = (config && config.loadBalancing) || 'round-robin';
     this.currentProviderIndex = 0;
 
     this.initializeConnectors();
@@ -23,7 +23,7 @@ export class LLMBridge {
    * Initialize all configured connectors
    */
   initializeConnectors() {
-    const { providers = {} } = this.config;
+    const { providers = {} } = this.config || {};
 
     // Initialize OpenAI connector
     if (providers && providers.openai?.enabled) {
@@ -90,7 +90,7 @@ export class LLMBridge {
       logger.error(`[LLMBridge] Query failed for provider "${provider}"`, { error: error.message });
 
       // Attempt fallback to another provider if configured
-      if (this.config.enableFallback && options.provider === undefined) {
+      if (this.config && this.config.enableFallback && options.provider === undefined) {
         return await this.queryWithFallback(options, provider);
       }
 
