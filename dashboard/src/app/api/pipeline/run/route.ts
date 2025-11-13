@@ -13,8 +13,35 @@ const activeRuns = new Map<
     result: any
     logs: any[]
     artifacts: any[]
+    timestamp: number
   }
 >()
+
+// Cleanup old runs every 5 minutes
+const CLEANUP_INTERVAL = 5 * 60 * 1000 // 5 minutes
+const MAX_RUN_AGE = 60 * 60 * 1000 // 1 hour
+const MAX_RUNS = 100 // Maximum number of concurrent runs
+
+setInterval(() => {
+  const now = Date.now()
+  for (const [runId, run] of activeRuns.entries()) {
+    if (now - run.timestamp > MAX_RUN_AGE) {
+      activeRuns.delete(runId)
+      console.log(`[Pipeline] Cleaned up old run: ${runId}`)
+    }
+  }
+
+  // If still too many runs, delete oldest ones
+  if (activeRuns.size > MAX_RUNS) {
+    const sortedRuns = Array.from(activeRuns.entries())
+      .sort((a, b) => a[1].timestamp - b[1].timestamp)
+    const toDelete = sortedRuns.slice(0, activeRuns.size - MAX_RUNS)
+    toDelete.forEach(([runId]) => {
+      activeRuns.delete(runId)
+      console.log(`[Pipeline] Cleaned up excess run: ${runId}`)
+    })
+  }
+}, CLEANUP_INTERVAL)
 
 export async function POST(request: NextRequest) {
   try {
@@ -54,7 +81,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Generate run ID
-    const runId = `run-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    const runId = `run-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
 
     // Store the run
     activeRuns.set(runId, {
@@ -62,6 +89,7 @@ export async function POST(request: NextRequest) {
       result: null,
       logs: [],
       artifacts: [],
+      timestamp: Date.now(),
     })
 
     // Start pipeline in background

@@ -23,9 +23,9 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
   } = options;
 
   const [isConnected, setIsConnected] = useState(false);
-  const [reconnectAttempts, setReconnectAttempts] = useState(0);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
+  const reconnectAttemptsRef = useRef(0);
 
   const connect = useCallback(() => {
     try {
@@ -34,7 +34,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
       ws.onopen = () => {
         console.log('[WebSocket] Connected');
         setIsConnected(true);
-        setReconnectAttempts(0);
+        reconnectAttemptsRef.current = 0;
         onOpen?.();
       };
 
@@ -53,10 +53,10 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
         onClose?.();
 
         // Attempt reconnection
-        if (reconnectAttempts < maxReconnectAttempts) {
+        if (reconnectAttemptsRef.current < maxReconnectAttempts) {
           console.log(`[WebSocket] Reconnecting in ${reconnectInterval}ms...`);
           reconnectTimeoutRef.current = setTimeout(() => {
-            setReconnectAttempts((prev) => prev + 1);
+            reconnectAttemptsRef.current += 1;
             connect();
           }, reconnectInterval);
         }
@@ -71,7 +71,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     } catch (error) {
       console.error('[WebSocket] Failed to connect:', error);
     }
-  }, [onMessage, onOpen, onClose, onError, reconnectInterval, reconnectAttempts, maxReconnectAttempts]);
+  }, [onMessage, onOpen, onClose, onError, reconnectInterval, maxReconnectAttempts]);
 
   const disconnect = useCallback(() => {
     if (reconnectTimeoutRef.current) {

@@ -115,10 +115,10 @@ if (config.security.cors.enabled) {
 }
 
 // Rate limiting
-if (config.security?.rateLimit?.enabled) {
+if (config.security?.rateLimiting?.enabled) {
   const limiter = rateLimit({
-    windowMs: config.security.rateLimit.windowMs || 15 * 60 * 1000, // 15 minutes
-    max: config.security.rateLimit.max || 100, // limit each IP to 100 requests per windowMs
+    windowMs: config.security.rateLimiting.windowMs || 15 * 60 * 1000, // 15 minutes
+    max: config.security.rateLimiting.max || 100, // limit each IP to 100 requests per windowMs
     message: 'Too many requests from this IP, please try again later.',
     standardHeaders: true,
     legacyHeaders: false,
