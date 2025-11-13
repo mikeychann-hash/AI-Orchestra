@@ -4,6 +4,7 @@
  */
 
 import { Octokit } from '@octokit/rest';
+import logger from '../logger.js';
 
 export class GitHubIntegration {
   constructor(config = {}) {
@@ -34,7 +35,7 @@ export class GitHubIntegration {
       });
       return response.data;
     } catch (error) {
-      console.error('[GitHub] Failed to get repository:', error.message);
+      logger.error('[GitHub] Failed to get repository', { error: error.message });
       throw error;
     }
   }
@@ -70,7 +71,7 @@ export class GitHubIntegration {
 
       return response.data;
     } catch (error) {
-      console.error('[GitHub] Failed to list issues:', error.message);
+      logger.error('[GitHub] Failed to list issues', { error: error.message });
       throw error;
     }
   }
@@ -91,7 +92,7 @@ export class GitHubIntegration {
       });
       return response.data;
     } catch (error) {
-      console.error('[GitHub] Failed to get issue:', error.message);
+      logger.error('[GitHub] Failed to get issue', { error: error.message });
       throw error;
     }
   }
@@ -125,7 +126,7 @@ export class GitHubIntegration {
 
       return response.data;
     } catch (error) {
-      console.error('[GitHub] Failed to create issue:', error.message);
+      logger.error('[GitHub] Failed to create issue', { error: error.message });
       throw error;
     }
   }
@@ -153,7 +154,7 @@ export class GitHubIntegration {
 
       return response.data;
     } catch (error) {
-      console.error('[GitHub] Failed to update issue:', error.message);
+      logger.error('[GitHub] Failed to update issue', { error: error.message });
       throw error;
     }
   }
@@ -176,7 +177,7 @@ export class GitHubIntegration {
       });
       return response.data;
     } catch (error) {
-      console.error('[GitHub] Failed to add comment:', error.message);
+      logger.error('[GitHub] Failed to add comment', { error: error.message });
       throw error;
     }
   }
@@ -210,7 +211,7 @@ export class GitHubIntegration {
 
       return response.data;
     } catch (error) {
-      console.error('[GitHub] Failed to list pull requests:', error.message);
+      logger.error('[GitHub] Failed to list pull requests', { error: error.message });
       throw error;
     }
   }
@@ -231,7 +232,7 @@ export class GitHubIntegration {
       });
       return response.data;
     } catch (error) {
-      console.error('[GitHub] Failed to get pull request:', error.message);
+      logger.error('[GitHub] Failed to get pull request', { error: error.message });
       throw error;
     }
   }
@@ -257,7 +258,7 @@ export class GitHubIntegration {
 
       return response.data;
     } catch (error) {
-      console.error('[GitHub] Failed to create pull request:', error.message);
+      logger.error('[GitHub] Failed to create pull request', { error: error.message });
       throw error;
     }
   }
@@ -289,7 +290,7 @@ export class GitHubIntegration {
 
       return response.data;
     } catch (error) {
-      console.error('[GitHub] Failed to merge pull request:', error.message);
+      logger.error('[GitHub] Failed to merge pull request', { error: error.message });
       throw error;
     }
   }
@@ -318,7 +319,7 @@ export class GitHubIntegration {
 
       return response.data;
     } catch (error) {
-      console.error('[GitHub] Failed to get file contents:', error.message);
+      logger.error('[GitHub] Failed to get file contents', { error: error.message });
       throw error;
     }
   }
@@ -347,7 +348,7 @@ export class GitHubIntegration {
 
       return response.data;
     } catch (error) {
-      console.error('[GitHub] Failed to create/update file:', error.message);
+      logger.error('[GitHub] Failed to create/update file', { error: error.message });
       throw error;
     }
   }
@@ -366,7 +367,7 @@ export class GitHubIntegration {
       });
       return response.data;
     } catch (error) {
-      console.error('[GitHub] Failed to list branches:', error.message);
+      logger.error('[GitHub] Failed to list branches', { error: error.message });
       throw error;
     }
   }
@@ -380,7 +381,7 @@ export class GitHubIntegration {
       const response = await this.octokit.users.getAuthenticated();
       return response.data;
     } catch (error) {
-      console.error('[GitHub] Failed to get authenticated user:', error.message);
+      logger.error('[GitHub] Failed to get authenticated user', { error: error.message });
       throw error;
     }
   }
@@ -394,7 +395,7 @@ export class GitHubIntegration {
       await this.getAuthenticatedUser();
       return true;
     } catch (error) {
-      console.error('[GitHub] Connection test failed:', error.message);
+      logger.error('[GitHub] Connection test failed', { error: error.message });
       return false;
     }
   }

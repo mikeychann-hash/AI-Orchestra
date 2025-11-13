@@ -6,6 +6,7 @@
 import { OpenAIConnector } from './connectors/openai_connector.js';
 import { GrokConnector } from './connectors/grok_connector.js';
 import { OllamaConnector } from './connectors/ollama_connector.js';
+import logger from './logger.js';
 
 export class LLMBridge {
   constructor(config = {}) {
@@ -25,37 +26,37 @@ export class LLMBridge {
     const { providers = {} } = this.config;
 
     // Initialize OpenAI connector
-    if (providers.openai?.enabled) {
+    if (providers && providers.openai?.enabled) {
       try {
         this.connectors.set('openai', new OpenAIConnector(providers.openai));
-        console.log('[LLMBridge] OpenAI connector initialized');
+        logger.info('[LLMBridge] OpenAI connector initialized');
       } catch (error) {
-        console.error('[LLMBridge] Failed to initialize OpenAI connector:', error.message);
+        logger.error('[LLMBridge] Failed to initialize OpenAI connector', { error: error.message });
       }
     }
 
     // Initialize Grok connector
-    if (providers.grok?.enabled) {
+    if (providers && providers.grok?.enabled) {
       try {
         this.connectors.set('grok', new GrokConnector(providers.grok));
-        console.log('[LLMBridge] Grok connector initialized');
+        logger.info('[LLMBridge] Grok connector initialized');
       } catch (error) {
-        console.error('[LLMBridge] Failed to initialize Grok connector:', error.message);
+        logger.error('[LLMBridge] Failed to initialize Grok connector', { error: error.message });
       }
     }
 
     // Initialize Ollama connector
-    if (providers.ollama?.enabled) {
+    if (providers && providers.ollama?.enabled) {
       try {
         this.connectors.set('ollama', new OllamaConnector(providers.ollama));
-        console.log('[LLMBridge] Ollama connector initialized');
+        logger.info('[LLMBridge] Ollama connector initialized');
       } catch (error) {
-        console.error('[LLMBridge] Failed to initialize Ollama connector:', error.message);
+        logger.error('[LLMBridge] Failed to initialize Ollama connector', { error: error.message });
       }
     }
 
     if (this.connectors.size === 0) {
-      console.warn('[LLMBridge] No connectors initialized. Check your configuration.');
+      logger.warn('[LLMBridge] No connectors initialized. Check your configuration.');
     }
   }
 
@@ -86,7 +87,7 @@ export class LLMBridge {
         provider,
       };
     } catch (error) {
-      console.error(`[LLMBridge] Query failed for provider "${provider}":`, error.message);
+      logger.error(`[LLMBridge] Query failed for provider "${provider}"`, { error: error.message });
 
       // Attempt fallback to another provider if configured
       if (this.config.enableFallback && options.provider === undefined) {
@@ -118,7 +119,7 @@ export class LLMBridge {
         };
       }
     } catch (error) {
-      console.error(`[LLMBridge] Stream query failed for provider "${provider}":`, error.message);
+      logger.error(`[LLMBridge] Stream query failed for provider "${provider}"`, { error: error.message });
       throw error;
     }
   }
@@ -136,7 +137,7 @@ export class LLMBridge {
 
     for (const provider of availableProviders) {
       try {
-        console.log(`[LLMBridge] Attempting fallback to provider "${provider}"`);
+        logger.info(`[LLMBridge] Attempting fallback to provider "${provider}"`);
         const connector = this.connectors.get(provider);
         const response = await connector.query(options);
         return {
@@ -146,7 +147,7 @@ export class LLMBridge {
           originalProvider: failedProvider,
         };
       } catch (error) {
-        console.error(`[LLMBridge] Fallback provider "${provider}" also failed:`, error.message);
+        logger.error(`[LLMBridge] Fallback provider "${provider}" also failed`, { error: error.message });
       }
     }
 
@@ -238,7 +239,7 @@ export class LLMBridge {
       try {
         models[provider] = await connector.getModels();
       } catch (error) {
-        console.error(`[LLMBridge] Failed to get models from "${provider}":`, error.message);
+        logger.error(`[LLMBridge] Failed to get models from "${provider}"`, { error: error.message });
         models[provider] = [];
       }
     }

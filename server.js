@@ -449,7 +449,7 @@ app.get('/api/models', async (req, res) => {
     const models = await llmBridge.getAllModels();
     res.json(models);
   } catch (error) {
-    console.error('[API] Failed to get models:', error.message);
+    logger.error('[API] Failed to get models', { error: error.message });
     res.status(500).json({ error: error.message });
   }
 });
@@ -467,9 +467,54 @@ if (githubIntegration) {
 
   app.get('/api/github/issues', async (req, res) => {
     try {
+      // Validate query parameters
+      const { state, sort, direction, per_page, page } = req.query;
+
+      // Validate state parameter
+      if (state && !['open', 'closed', 'all'].includes(state)) {
+        return res.status(400).json({
+          error: 'Invalid state parameter. Must be one of: open, closed, all'
+        });
+      }
+
+      // Validate sort parameter
+      if (sort && !['created', 'updated', 'comments'].includes(sort)) {
+        return res.status(400).json({
+          error: 'Invalid sort parameter. Must be one of: created, updated, comments'
+        });
+      }
+
+      // Validate direction parameter
+      if (direction && !['asc', 'desc'].includes(direction)) {
+        return res.status(400).json({
+          error: 'Invalid direction parameter. Must be one of: asc, desc'
+        });
+      }
+
+      // Validate per_page parameter
+      if (per_page !== undefined) {
+        const perPageNum = parseInt(per_page, 10);
+        if (isNaN(perPageNum) || perPageNum < 1 || perPageNum > 100) {
+          return res.status(400).json({
+            error: 'Invalid per_page parameter. Must be a number between 1 and 100'
+          });
+        }
+      }
+
+      // Validate page parameter
+      if (page !== undefined) {
+        const pageNum = parseInt(page, 10);
+        if (isNaN(pageNum) || pageNum < 1) {
+          return res.status(400).json({
+            error: 'Invalid page parameter. Must be a positive number'
+          });
+        }
+      }
+
       const issues = await githubIntegration.listIssues(req.query);
       res.json(issues);
     } catch (error) {
+      logger.error('[API] GitHub issues request failed', { error: error.message });
       res.status(500).json({ error: error.message });
     }
   });
