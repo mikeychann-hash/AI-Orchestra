@@ -150,33 +150,48 @@ export class PipelineController {
       for (const component of frontend.components) {
         this.log('info', PipelineStage.FRONTEND, `Generating component: ${component.name}`);
 
-        const result = await this.frontendAgent.run({
-          feature: component.description,
-          componentName: component.name,
-          styling: frontend.styling || 'tailwind',
-          framework: frontend.framework || 'react',
-          typescript: true,
-          accessibility: true,
-          responsive: true,
-          context: featureSpec.description,
-        });
+        try {
+          const result = await this.frontendAgent.run({
+            feature: component.description,
+            componentName: component.name,
+            styling: frontend.styling || 'tailwind',
+            framework: frontend.framework || 'react',
+            typescript: true,
+            accessibility: true,
+            responsive: true,
+            context: featureSpec.description,
+          });
 
-        components.push(result);
+          components.push(result);
 
-        // Add artifacts
-        this.addArtifact('frontend', PipelineStage.FRONTEND, {
-          type: 'component',
-          path: `${result.componentName}.tsx`,
-          content: result.code,
-        });
+          // Add artifacts
+          this.addArtifact('frontend', PipelineStage.FRONTEND, {
+            type: 'component',
+            path: `${result.componentName}.tsx`,
+            content: result.code,
+          });
 
-        if (result.files) {
-          result.files.forEach((file) => {
-            this.addArtifact('frontend', PipelineStage.FRONTEND, {
-              type: 'supporting-file',
-              path: file.path,
-              content: file.content,
+          if (result.files) {
+            result.files.forEach((file) => {
+              this.addArtifact('frontend', PipelineStage.FRONTEND, {
+                type: 'supporting-file',
+                path: file.path,
+                content: file.content,
+              });
             });
+          }
+
+          this.log('info', PipelineStage.FRONTEND, `Successfully generated component: ${component.name}`);
+        } catch (error) {
+          // Log the error but continue with remaining components
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          this.log('error', PipelineStage.FRONTEND, `Component ${component.name} failed: ${errorMessage}`);
+
+          // Add error artifact for traceability
+          this.addArtifact('frontend', PipelineStage.FRONTEND, {
+            type: 'error',
+            path: `${component.name}.error.txt`,
+            content: `Failed to generate component: ${errorMessage}`,
           });
         }
       }
@@ -220,40 +235,55 @@ export class PipelineController {
       for (const endpoint of backend.endpoints) {
         this.log('info', PipelineStage.BACKEND, `Generating endpoint: ${endpoint.method} ${endpoint.route}`);
 
-        const result = await this.backendAgent.run({
-          feature: endpoint.description,
-          method: endpoint.method,
-          route: endpoint.route,
-          framework: backend.framework || 'express',
-          database: backend.database || 'postgresql',
-          authentication: endpoint.authentication,
-          validation: true,
-          typescript: true,
-          context: featureSpec.description,
-        });
-
-        endpoints.push(result);
-
-        // Add artifacts
-        this.addArtifact('backend', PipelineStage.BACKEND, {
-          type: 'endpoint',
-          path: `${endpoint.route.replace(/\//g, '-')}.route.ts`,
-          content: result.code,
-        });
-
-        if (result.middleware) {
-          this.addArtifact('backend', PipelineStage.BACKEND, {
-            type: 'middleware',
-            path: `${endpoint.route.replace(/\//g, '-')}.middleware.ts`,
-            content: result.middleware,
+        try {
+          const result = await this.backendAgent.run({
+            feature: endpoint.description,
+            method: endpoint.method,
+            route: endpoint.route,
+            framework: backend.framework || 'express',
+            database: backend.database || 'postgresql',
+            authentication: endpoint.authentication,
+            validation: true,
+            typescript: true,
+            context: featureSpec.description,
           });
-        }
 
-        if (result.model) {
+          endpoints.push(result);
+
+          // Add artifacts
           this.addArtifact('backend', PipelineStage.BACKEND, {
-            type: 'model',
-            path: `${endpoint.route.replace(/\//g, '-')}.model.ts`,
-            content: result.model,
+            type: 'endpoint',
+            path: `${endpoint.route.replace(/\//g, '-')}.route.ts`,
+            content: result.code,
+          });
+
+          if (result.middleware) {
+            this.addArtifact('backend', PipelineStage.BACKEND, {
+              type: 'middleware',
+              path: `${endpoint.route.replace(/\//g, '-')}.middleware.ts`,
+              content: result.middleware,
+            });
+          }
+
+          if (result.model) {
+            this.addArtifact('backend', PipelineStage.BACKEND, {
+              type: 'model',
+              path: `${endpoint.route.replace(/\//g, '-')}.model.ts`,
+              content: result.model,
+            });
+          }
+
+          this.log('info', PipelineStage.BACKEND, `Successfully generated endpoint: ${endpoint.method} ${endpoint.route}`);
+        } catch (error) {
+          // Log the error but continue with remaining endpoints
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          this.log('error', PipelineStage.BACKEND, `Endpoint ${endpoint.method} ${endpoint.route} failed: ${errorMessage}`);
+
+          // Add error artifact for traceability
+          this.addArtifact('backend', PipelineStage.BACKEND, {
+            type: 'error',
+            path: `${endpoint.route.replace(/\//g, '-')}.error.txt`,
+            content: `Failed to generate endpoint: ${errorMessage}`,
           });
         }
       }

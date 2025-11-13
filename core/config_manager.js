@@ -148,7 +148,8 @@ export class ConfigManager {
     if (typeof value === 'boolean') {
       return value;
     }
-    return value.toLowerCase() === 'true' || value === '1';
+    // Convert to string safely to avoid TypeError on non-string values
+    return String(value).toLowerCase() === 'true' || value === '1';
   }
 
   /**

@@ -207,19 +207,103 @@ GET /api/status
 
 ## 🧪 Testing
 
-### Run Unit Tests
+### Quick Start Testing
+
+**Run all tests with coverage:**
 ```bash
-npm test
+npm run test:coverage
 ```
 
-### Run Integration Tests
+**Run tests in watch mode (for development):**
 ```bash
-npm run test:integration
+npm run test:watch
 ```
+
+**Run unit tests only:**
+```bash
+npm run test:unit
+```
+
+### Test Scripts Reference
+
+| Command | Description | Output |
+|---------|-------------|--------|
+| `npm test` | Run all tests with text and HTML coverage | Terminal + coverage/ |
+| `npm run test:coverage` | Run tests with full coverage reporting (text, HTML, lcov) | Terminal + coverage/ + lcov.info |
+| `npm run test:unit` | Run unit tests only (faster) | Terminal only |
+| `npm run test:watch` | Run tests in watch mode for TDD | Terminal (auto-rerun) |
+| `npm run test:integration` | Run integration tests | Terminal |
+
+### Understanding Coverage Reports
+
+**Terminal Output:**
+```
+--------------------------|---------|----------|---------|---------|-------------------
+File                      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+--------------------------|---------|----------|---------|---------|-------------------
+All files                 |   18.24 |     8.33 |   23.08 |   18.24 |
+ core                     |   21.43 |    12.50 |   27.27 |   21.43 |
+  config_manager.js       |   65.00 |    50.00 |   70.00 |   65.00 | 45-67,89-102
+  llm_bridge.js           |   12.50 |     5.00 |   15.00 |   12.50 | 12-89,95-234
+--------------------------|---------|----------|---------|---------|-------------------
+```
+
+**HTML Report:**
+Open `coverage/index.html` in your browser for detailed, browsable coverage reports showing exact lines not covered.
+
+**Coverage Goals:**
+- **Phase 1 (Current):** 15-20% baseline
+- **Phase 2:** 45-55% (critical paths)
+- **Phase 3:** 65-75% (connectors)
+- **Phase 4:** 75-85% (dashboard + E2E)
+- **Phase 5:** 80-90% (production ready)
 
 ### Test in Docker
 ```bash
 docker exec ai-orchestra-app npm test
+```
+
+### Writing Tests
+
+**Test Structure:**
+```javascript
+import { describe, it, before, after } from 'node:test';
+import assert from 'node:assert';
+
+describe('Feature Name', () => {
+  before(() => {
+    // Setup before tests
+  });
+
+  it('should do something specific', () => {
+    const result = functionUnderTest();
+    assert.strictEqual(result, expectedValue);
+  });
+
+  after(() => {
+    // Cleanup after tests
+  });
+});
+```
+
+**Best Practices:**
+- One assertion per test when possible
+- Clear test names describing expected behavior
+- Use `describe` to group related tests
+- Clean up resources in `after` hooks
+- Mock external dependencies (use `nock` for HTTP, `sinon` for functions)
+
+### CI/CD Testing
+
+Tests run automatically on every PR:
+- Linting must pass (ESLint)
+- Type checking must pass (TypeScript)
+- All tests must pass
+- Coverage reported to Codecov
+
+**Local pre-commit check:**
+```bash
+npm run lint && npm run type-check && npm test
 ```
 
 ## 🐳 Docker Commands
@@ -246,12 +330,108 @@ docker-compose ps
 
 ## 📚 Documentation
 
-- [Production Deployment](docs/PRODUCTION.md) - **Complete production setup guide**
+### User Guides
+- [Getting Started](GETTING_STARTED.md) - Quick start guide for new users
 - [Dashboard Guide](docs/DASHBOARD.md) - Dashboard documentation
+- [Production Deployment](docs/PRODUCTION.md) - Complete production setup guide
 - [Deployment Guide](docs/DEPLOYMENT.md) - Basic deployment instructions
+
+### Developer Guides
 - [Architecture Overview](AI%20Orchestra.md) - System architecture and design
-- [Dashboard README](dashboard/README.md) - Dashboard development guide
-- Configuration Reference - See `config/.env.example` or `.env.production.example`
+- [Architecture Decisions](ARCHITECTURE_DECISIONS.md) - ADRs documenting key decisions
+- [Dashboard Development](dashboard/README.md) - Dashboard development guide
+- [Contributing Guidelines](#-contributing) - How to contribute to this project
+
+### Operations Guides
+- [Master Bug Guide](MASTER_BUG_GUIDE.md) - Living bug tracking document
+- [Iteration 1 Changelog](ITERATION_1_CHANGELOG.md) - Recent improvements and fixes
+- [Agent Team Report](AGENT_TEAM_REPORT.md) - AI Agent Team analysis results
+
+### Configuration Reference
+- [Environment Variables](config/.env.example) - Development configuration
+- [Production Config](.env.production.example) - Production settings
+- [Settings Reference](config/settings.json) - Application settings
+
+### Architecture
+
+**System Architecture:**
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     AI Orchestra                            │
+└─────────────────────────────────────────────────────────────┘
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        │                     │                     │
+┌───────▼────────┐  ┌─────────▼────────┐  ┌────────▼────────┐
+│   Dashboard    │  │   Core System    │  │  Orchestrator   │
+│  (Next.js)     │  │   (Node.js)      │  │   (Python)      │
+│                │  │                  │  │                 │
+│ - Build UI     │  │ - LLM Bridge     │  │ - Workflows     │
+│ - Logs Viewer  │  │ - Connectors     │  │ - Task Graph    │
+│ - Artifacts    │  │ - API Server     │  │ - Dependencies  │
+└────────────────┘  └──────────────────┘  └─────────────────┘
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        │                     │                     │
+┌───────▼────────┐  ┌─────────▼────────┐  ┌────────▼────────┐
+│   OpenAI       │  │     Grok         │  │    Ollama       │
+│  Connector     │  │   Connector      │  │   Connector     │
+└────────────────┘  └──────────────────┘  └─────────────────┘
+```
+
+**Key Components:**
+- **LLM Bridge:** Multi-provider orchestration with load balancing and fallback
+- **Agents:** Specialized agents for frontend, backend, database, DevOps tasks
+- **Pipeline:** Workflow orchestration for complex multi-agent tasks
+- **Dashboard:** Real-time monitoring and control interface
+
+**Design Patterns:**
+- **Strategy Pattern:** Interchangeable LLM provider implementations
+- **Bridge Pattern:** Decouples LLM interface from implementation
+- **Template Method:** BaseAgent defines agent workflow
+- **Factory Pattern:** LLMBridge creates provider instances
+
+See [ARCHITECTURE_DECISIONS.md](ARCHITECTURE_DECISIONS.md) for detailed ADRs.
+
+### Security Considerations
+
+**Current Security Posture:**
+- ✅ Rate limiting active (DoS protection)
+- ✅ Helmet.js security headers
+- ✅ CORS configuration
+- ⚠️ No authentication/authorization (Phase 2)
+- ⚠️ No input validation (Phase 2)
+- ⚠️ No CSRF protection (Phase 2)
+
+**Security Best Practices:**
+
+1. **API Keys:**
+   - Store in `.env` file (never commit to git)
+   - Use separate keys for dev/staging/prod
+   - Rotate keys regularly
+   - Consider secrets management (Vault, AWS Secrets Manager)
+
+2. **Rate Limiting:**
+   ```javascript
+   // Configured in config/settings.json
+   "rateLimiting": {
+     "enabled": true,
+     "windowMs": 60000,    // 1 minute
+     "max": 100            // 100 requests per minute
+   }
+   ```
+
+3. **Environment Isolation:**
+   - Development: Use test API keys with low limits
+   - Staging: Separate keys from production
+   - Production: Use restricted keys, enable all security features
+
+4. **Known Vulnerabilities (Phase 2 Fixes):**
+   - Input validation needed (Zod implementation planned)
+   - CSRF protection needed for POST/PUT/DELETE endpoints
+   - Authentication/authorization needed (JWT + RBAC planned)
+
+See [MASTER_BUG_GUIDE.md](MASTER_BUG_GUIDE.md) for detailed security findings and roadmap.
 
 ## 🏗️ Project Structure
 
@@ -320,7 +500,201 @@ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read our contributing guidelines before submitting pull requests.
+We welcome contributions to AI Orchestra! This section provides guidelines for contributing code, documentation, and bug reports.
+
+### Getting Started
+
+1. **Fork the repository** on GitHub
+2. **Clone your fork** locally:
+   ```bash
+   git clone https://github.com/your-username/AI-Orchestra.git
+   cd AI-Orchestra
+   ```
+3. **Create a feature branch:**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+4. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+5. **Make your changes** following our coding standards
+6. **Run tests** to ensure nothing breaks:
+   ```bash
+   npm run lint && npm run type-check && npm test
+   ```
+7. **Commit your changes** with a clear message:
+   ```bash
+   git commit -m "feat: add new feature description"
+   ```
+8. **Push to your fork:**
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+9. **Open a Pull Request** on GitHub
+
+### Contribution Types
+
+**Bug Fixes:**
+- Check [MASTER_BUG_GUIDE.md](MASTER_BUG_GUIDE.md) for known issues
+- Reference bug number in PR title: `fix: Bug #12 - Add input validation`
+- Include tests demonstrating the bug and fix
+- Update MASTER_BUG_GUIDE.md to mark bug as fixed
+
+**New Features:**
+- Discuss in GitHub Issues before starting large features
+- Follow existing design patterns (see [ARCHITECTURE_DECISIONS.md](ARCHITECTURE_DECISIONS.md))
+- Include comprehensive tests (aim for 80%+ coverage)
+- Update documentation (README, ADRs if architectural change)
+
+**Documentation:**
+- Fix typos, improve clarity, add examples
+- Keep documentation in sync with code
+- Update relevant guides when changing features
+
+**Tests:**
+- Improve test coverage (see coverage report in `coverage/index.html`)
+- Add missing test cases
+- Improve test quality and clarity
+
+### Code Standards
+
+**JavaScript/TypeScript:**
+- Follow ESLint configuration (run `npm run lint`)
+- Use Prettier for formatting
+- Prefer TypeScript for new code
+- Add JSDoc comments to public APIs
+
+**Testing:**
+- Write tests for all new code
+- Maintain or improve code coverage
+- Use descriptive test names
+- Mock external dependencies
+
+**Commit Messages:**
+Follow [Conventional Commits](https://www.conventionalcommits.org/):
+- `feat:` New feature
+- `fix:` Bug fix
+- `docs:` Documentation changes
+- `test:` Test additions or fixes
+- `refactor:` Code refactoring
+- `perf:` Performance improvements
+- `chore:` Maintenance tasks
+
+**Examples:**
+```
+feat: add Zod validation for API endpoints
+fix: Bug #8 - add component-level error handling in pipeline
+docs: update README with testing instructions
+test: add integration tests for LLM connectors
+refactor: consolidate JavaScript to TypeScript
+```
+
+### Pull Request Guidelines
+
+**Before Submitting:**
+- [ ] Code follows project style guidelines
+- [ ] All tests pass (`npm test`)
+- [ ] Linting passes (`npm run lint`)
+- [ ] Type checking passes (`npm run type-check`)
+- [ ] New code has tests (maintain/improve coverage)
+- [ ] Documentation updated if needed
+- [ ] Commit messages follow Conventional Commits
+
+**PR Description Template:**
+```markdown
+## Summary
+Brief description of changes
+
+## Type of Change
+- [ ] Bug fix (fixes issue #X)
+- [ ] New feature
+- [ ] Documentation update
+- [ ] Test improvement
+- [ ] Refactoring
+
+## Testing
+- [ ] Unit tests added/updated
+- [ ] Integration tests added/updated
+- [ ] Manual testing performed
+
+## Checklist
+- [ ] Code follows style guidelines
+- [ ] Tests pass locally
+- [ ] Documentation updated
+- [ ] No breaking changes (or documented)
+
+## Related Issues
+Fixes #X
+Closes #Y
+```
+
+### Code Review Process
+
+1. **Automated Checks:** CI/CD runs linting, type checking, tests
+2. **Coverage Check:** Codecov reports coverage changes
+3. **Maintainer Review:** Project maintainer reviews code
+4. **Feedback:** Address review comments
+5. **Approval:** Maintainer approves and merges
+
+**Review Criteria:**
+- Code quality and clarity
+- Test coverage (prefer 80%+)
+- Documentation completeness
+- Adherence to architecture decisions
+- No breaking changes (or properly documented)
+
+### Development Workflow
+
+**Local Development:**
+```bash
+# Start development server with hot reload
+npm run dev
+
+# Run tests in watch mode
+npm run test:watch
+
+# Check coverage
+npm run test:coverage
+open coverage/index.html
+```
+
+**Pre-commit Checklist:**
+```bash
+# Run all quality checks
+npm run lint && npm run type-check && npm test
+```
+
+**Docker Development:**
+```bash
+# Build and run in Docker
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Run tests in Docker
+docker exec ai-orchestra-app npm test
+```
+
+### Project Priorities
+
+See [MASTER_BUG_GUIDE.md](MASTER_BUG_GUIDE.md) for current priorities:
+- **Phase 2:** Input validation, API tests, error handling
+- **Phase 3:** Connector tests, integration tests
+- **Phase 4:** Dashboard tests, E2E tests
+- **Phase 5:** Performance optimization, code quality
+
+### Questions or Issues?
+
+- **Bug Reports:** Create an issue with bug template
+- **Feature Requests:** Create an issue with feature template
+- **Questions:** Use GitHub Discussions
+- **Security Issues:** Email maintainers (do not create public issue)
+
+### License
+
+By contributing, you agree that your contributions will be licensed under the MIT License.
 
 ## 📄 License
 

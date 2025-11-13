@@ -291,6 +291,29 @@ app.post('/api/query', async (req, res) => {
       return res.status(400).json({ error: 'Prompt is required' });
     }
 
+    // Validate prompt length
+    if (typeof prompt !== 'string' || prompt.length === 0) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'Prompt must be a non-empty string' });
+    }
+
+    if (prompt.length > 50000) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'Prompt exceeds maximum length of 50,000 characters' });
+    }
+
+    // Validate temperature range
+    if (temperature !== undefined && (typeof temperature !== 'number' || temperature < 0 || temperature > 2)) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'Temperature must be a number between 0 and 2' });
+    }
+
+    // Validate maxTokens
+    if (maxTokens !== undefined && (typeof maxTokens !== 'number' || maxTokens < 1 || maxTokens > 100000)) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'maxTokens must be a number between 1 and 100,000' });
+    }
+
     const response = await llmBridge.query({
       prompt,
       provider,
@@ -335,6 +358,29 @@ app.post('/api/stream', async (req, res) => {
     if (!prompt) {
       llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
       return res.status(400).json({ error: 'Prompt is required' });
+    }
+
+    // Validate prompt length
+    if (typeof prompt !== 'string' || prompt.length === 0) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'Prompt must be a non-empty string' });
+    }
+
+    if (prompt.length > 50000) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'Prompt exceeds maximum length of 50,000 characters' });
+    }
+
+    // Validate temperature range
+    if (temperature !== undefined && (typeof temperature !== 'number' || temperature < 0 || temperature > 2)) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'Temperature must be a number between 0 and 2' });
+    }
+
+    // Validate maxTokens
+    if (maxTokens !== undefined && (typeof maxTokens !== 'number' || maxTokens < 1 || maxTokens > 100000)) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'maxTokens must be a number between 1 and 100,000' });
     }
 
     res.setHeader('Content-Type', 'text/event-stream');

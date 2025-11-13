@@ -1,17 +1,82 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import type { WebSocketMessage } from '@/types';
 
+/**
+ * WebSocket server URL from environment or default
+ * @constant {string}
+ */
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3001';
 
+/**
+ * Configuration options for useWebSocket hook
+ */
 interface UseWebSocketOptions {
+  /** Callback invoked when a message is received */
   onMessage?: (message: WebSocketMessage) => void;
+  /** Callback invoked when connection is established */
   onOpen?: () => void;
+  /** Callback invoked when connection is closed */
   onClose?: () => void;
+  /** Callback invoked when an error occurs */
   onError?: (error: Event) => void;
+  /** Milliseconds to wait before reconnection attempt (default: 3000) */
   reconnectInterval?: number;
+  /** Maximum number of reconnection attempts (default: 5) */
   maxReconnectAttempts?: number;
 }
 
+/**
+ * Custom React hook for WebSocket connections with automatic reconnection
+ *
+ * @description Manages WebSocket lifecycle including connection, disconnection, and automatic
+ * reconnection on failure. Uses useRef for reconnection counter to prevent infinite loops
+ * (fixed in Iteration 1, Bug #2).
+ *
+ * **Key Features:**
+ * - Automatic reconnection with exponential backoff
+ * - Connection state tracking
+ * - Message sending with connection check
+ * - Cleanup on unmount
+ *
+ * @param {UseWebSocketOptions} options - Configuration options
+ * @returns {Object} WebSocket interface
+ * @returns {boolean} isConnected - Current connection status
+ * @returns {Function} sendMessage - Send a message through the WebSocket
+ * @returns {Function} disconnect - Manually disconnect
+ * @returns {Function} reconnect - Manually trigger reconnection
+ *
+ * @example Basic Usage
+ * ```typescript
+ * const { isConnected, sendMessage } = useWebSocket({
+ *   onMessage: (msg) => console.log('Received:', msg),
+ *   onOpen: () => console.log('Connected'),
+ *   reconnectInterval: 3000,
+ *   maxReconnectAttempts: 5,
+ * });
+ *
+ * // Send a message
+ * if (isConnected) {
+ *   sendMessage('log-update', { runId: '123', log: 'Processing...' });
+ * }
+ * ```
+ *
+ * @example With Status Display
+ * ```typescript
+ * function StatusIndicator() {
+ *   const { isConnected, reconnect } = useWebSocket();
+ *
+ *   return (
+ *     <div>
+ *       Status: {isConnected ? '🟢 Connected' : '🔴 Disconnected'}
+ *       <button onClick={reconnect}>Reconnect</button>
+ *     </div>
+ *   );
+ * }
+ * ```
+ *
+ * @see {@link MASTER_BUG_GUIDE.md} Bug #2 - Infinite Reconnection Loop
+ * @see {@link ARCHITECTURE_DECISIONS.md} ADR-004 - WebSocket State Management Pattern
+ */
 export function useWebSocket(options: UseWebSocketOptions = {}) {
   const {
     onMessage,
@@ -83,6 +148,21 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     }
   }, []);
 
+  /**
+   * Send a message through the WebSocket connection
+   *
+   * @description Sends a structured message with type and payload. Checks connection state
+   * before sending and warns if not connected.
+   *
+   * @param {string} type - Message type identifier
+   * @param {any} data - Message payload data
+   *
+   * @example
+   * ```typescript
+   * sendMessage('pipeline-start', { featureSpec: {...} });
+   * sendMessage('log-update', { runId: '123', message: 'Processing...' });
+   * ```
+   */
   const sendMessage = useCallback((type: string, data: any) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({ type, payload: data }));
