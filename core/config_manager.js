@@ -46,7 +46,7 @@ export class ConfigManager {
         name: settings.application?.name || 'AI Orchestra',
         version: settings.application?.version || '0.6.0',
         environment: process.env.NODE_ENV || settings.application?.environment || 'development',
-        port: parseInt(process.env.PORT || settings.application?.port || '3000'),
+        port: this.parseInt(process.env.PORT || settings.application?.port, 3000, { min: 1, max: 65535 }),
         host: process.env.HOST || settings.application?.host || 'localhost',
       },
       providers: {
@@ -73,19 +73,19 @@ export class ConfigManager {
         defaultProvider: process.env.LLM_DEFAULT_PROVIDER || settings.llm?.defaultProvider || 'openai',
         loadBalancing: process.env.LLM_LOAD_BALANCING || settings.llm?.loadBalancing || 'round-robin',
         enableFallback: this.parseBool(process.env.LLM_ENABLE_FALLBACK, settings.llm?.enableFallback),
-        requestTimeout: parseInt(process.env.LLM_REQUEST_TIMEOUT || settings.llm?.requestTimeout || '60000'),
-        retryAttempts: parseInt(process.env.LLM_RETRY_ATTEMPTS || settings.llm?.retryAttempts || '3'),
-        retryDelay: parseInt(process.env.LLM_RETRY_DELAY || settings.llm?.retryDelay || '1000'),
+        requestTimeout: this.parseInt(process.env.LLM_REQUEST_TIMEOUT || settings.llm?.requestTimeout, 60000, { min: 1000 }),
+        retryAttempts: this.parseInt(process.env.LLM_RETRY_ATTEMPTS || settings.llm?.retryAttempts, 3, { min: 0, max: 10 }),
+        retryDelay: this.parseInt(process.env.LLM_RETRY_DELAY || settings.llm?.retryDelay, 1000, { min: 100 }),
       },
       database: {
         type: process.env.DATABASE_TYPE || 'sqlite',
         path: process.env.DATABASE_PATH || './database/memory.sqlite',
         host: process.env.DATABASE_HOST,
-        port: parseInt(process.env.DATABASE_PORT || '5432'),
+        port: this.parseInt(process.env.DATABASE_PORT, 5432, { min: 1, max: 65535 }),
         name: process.env.DATABASE_NAME,
         user: process.env.DATABASE_USER,
         password: process.env.DATABASE_PASSWORD,
-        poolSize: parseInt(process.env.DATABASE_POOL_SIZE || '10'),
+        poolSize: this.parseInt(process.env.DATABASE_POOL_SIZE, 10, { min: 1, max: 100 }),
       },
       github: {
         enabled: this.parseBool(process.env.GITHUB_ENABLED, false),
@@ -95,12 +95,12 @@ export class ConfigManager {
       },
       websocket: {
         enabled: this.parseBool(process.env.WEBSOCKET_ENABLED, settings.websocket?.enabled),
-        port: parseInt(process.env.WEBSOCKET_PORT || settings.websocket?.port || '3001'),
+        port: this.parseInt(process.env.WEBSOCKET_PORT || settings.websocket?.port, 3001, { min: 1, max: 65535 }),
       },
       logging: {
         level: process.env.LOG_LEVEL || settings.logging?.level || 'info',
         filePath: process.env.LOG_FILE_PATH || settings.logging?.filePath || './logs/orchestra.log',
-        maxFiles: parseInt(process.env.LOG_MAX_FILES || settings.logging?.maxFiles || '10'),
+        maxFiles: this.parseInt(process.env.LOG_MAX_FILES || settings.logging?.maxFiles, 10, { min: 1 }),
         maxSize: process.env.LOG_MAX_SIZE || settings.logging?.maxSize || '10m',
       },
       security: {
@@ -114,8 +114,8 @@ export class ConfigManager {
         },
         rateLimiting: {
           enabled: this.parseBool(process.env.RATE_LIMIT_ENABLED, settings.security?.rateLimiting?.enabled),
-          windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || settings.security?.rateLimiting?.windowMs || '60000'),
-          maxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || settings.security?.rateLimiting?.maxRequests || '100'),
+          windowMs: this.parseInt(process.env.RATE_LIMIT_WINDOW_MS || settings.security?.rateLimiting?.windowMs, 60000, { min: 1000 }),
+          maxRequests: this.parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || settings.security?.rateLimiting?.maxRequests, 100, { min: 1 }),
         },
         apiKey: process.env.API_KEY,
         jwtSecret: process.env.JWT_SECRET,
@@ -137,7 +137,7 @@ export class ConfigManager {
 
   /**
    * Parse boolean from string or boolean value
-   * @param {string|boolean} value - Value to parse
+   * @param {string|boolean|number} value - Value to parse
    * @param {boolean} defaultValue - Default value if parsing fails
    * @returns {boolean}
    */
@@ -148,7 +148,68 @@ export class ConfigManager {
     if (typeof value === 'boolean') {
       return value;
     }
-    return value.toLowerCase() === 'true' || value === '1';
+    if (typeof value === 'number') {
+      return value === 1;
+    }
+    // Convert to string safely to avoid TypeError on non-string values
+    return String(value).toLowerCase() === 'true' || value === '1';
+  }
+
+  /**
+   * Safely parse integer from string or number value
+   * @param {string|number} value - Value to parse
+   * @param {number} defaultValue - Default value if parsing fails
+   * @param {Object} options - Validation options (min, max)
+   * @returns {number}
+   */
+  parseInt(value, defaultValue = 0, options = {}) {
+    // Handle null/undefined
+    if (value === undefined || value === null || value === '') {
+      return defaultValue;
+    }
+
+    // If already a number, validate it
+    if (typeof value === 'number') {
+      if (isNaN(value) || !isFinite(value)) {
+        console.warn(`[ConfigManager] Invalid number value: ${value}, using default: ${defaultValue}`);
+        return defaultValue;
+      }
+      const intValue = Math.floor(value);
+      return this.validateNumber(intValue, defaultValue, options);
+    }
+
+    // Parse string to integer
+    const parsed = Number.parseInt(String(value), 10);
+
+    if (isNaN(parsed)) {
+      console.warn(`[ConfigManager] Failed to parse integer from "${value}", using default: ${defaultValue}`);
+      return defaultValue;
+    }
+
+    return this.validateNumber(parsed, defaultValue, options);
+  }
+
+  /**
+   * Validate number against min/max constraints
+   * @param {number} value - Value to validate
+   * @param {number} defaultValue - Default value if validation fails
+   * @param {Object} options - Validation options (min, max)
+   * @returns {number}
+   */
+  validateNumber(value, defaultValue, options = {}) {
+    const { min, max } = options;
+
+    if (min !== undefined && value < min) {
+      console.warn(`[ConfigManager] Value ${value} is below minimum ${min}, using default: ${defaultValue}`);
+      return defaultValue;
+    }
+
+    if (max !== undefined && value > max) {
+      console.warn(`[ConfigManager] Value ${value} is above maximum ${max}, using default: ${defaultValue}`);
+      return defaultValue;
+    }
+
+    return value;
   }
 
   /**
@@ -174,6 +235,39 @@ export class ConfigManager {
    */
   validate() {
     const errors = [];
+
+    // Validate port numbers are valid
+    if (isNaN(this.config.application.port) || this.config.application.port < 1 || this.config.application.port > 65535) {
+      errors.push(`Invalid application port: ${this.config.application.port}`);
+    }
+
+    if (isNaN(this.config.websocket.port) || this.config.websocket.port < 1 || this.config.websocket.port > 65535) {
+      errors.push(`Invalid WebSocket port: ${this.config.websocket.port}`);
+    }
+
+    // Validate environment
+    const validEnvironments = ['development', 'production', 'test'];
+    if (!validEnvironments.includes(this.config.application.environment)) {
+      errors.push(`Invalid environment: ${this.config.application.environment}. Must be one of: ${validEnvironments.join(', ')}`);
+    }
+
+    // Validate log level
+    const validLogLevels = ['debug', 'info', 'warn', 'error'];
+    if (!validLogLevels.includes(this.config.logging.level)) {
+      errors.push(`Invalid log level: ${this.config.logging.level}. Must be one of: ${validLogLevels.join(', ')}`);
+    }
+
+    // Validate LLM provider
+    const validProviders = ['openai', 'grok', 'ollama'];
+    if (!validProviders.includes(this.config.llm.defaultProvider)) {
+      errors.push(`Invalid default provider: ${this.config.llm.defaultProvider}. Must be one of: ${validProviders.join(', ')}`);
+    }
+
+    // Validate load balancing strategy
+    const validStrategies = ['round-robin', 'random', 'default'];
+    if (!validStrategies.includes(this.config.llm.loadBalancing)) {
+      errors.push(`Invalid load balancing strategy: ${this.config.llm.loadBalancing}. Must be one of: ${validStrategies.join(', ')}`);
+    }
 
     // Validate at least one LLM provider is enabled
     const hasEnabledProvider =
@@ -203,6 +297,19 @@ export class ConfigManager {
     // Validate GitHub configuration
     if (this.config.github?.enabled && !this.config.github?.token) {
       errors.push('GitHub token is required when GitHub integration is enabled');
+    }
+
+    // Validate numeric ranges
+    if (this.config.llm.retryAttempts < 0 || this.config.llm.retryAttempts > 10) {
+      errors.push(`Invalid retry attempts: ${this.config.llm.retryAttempts}. Must be between 0 and 10`);
+    }
+
+    if (this.config.llm.requestTimeout < 1000) {
+      errors.push(`Invalid request timeout: ${this.config.llm.requestTimeout}. Must be at least 1000ms`);
+    }
+
+    if (this.config.database.poolSize < 1 || this.config.database.poolSize > 100) {
+      errors.push(`Invalid database pool size: ${this.config.database.poolSize}. Must be between 1 and 100`);
     }
 
     return {

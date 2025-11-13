@@ -16,6 +16,8 @@ import { ConfigManager } from './core/config_manager.js';
 import { LLMBridge } from './core/llm_bridge.js';
 import { GitHubIntegration } from './core/integrations/github_integration.js';
 import { createLogger, format, transports } from 'winston';
+import { getCsrfToken, csrfProtection, validateOrigin } from './middleware/csrf.js';
+import { cookieParser, enableCookieResponse } from './middleware/cookieParser.js';
 
 // Initialize configuration
 const configManager = new ConfigManager();
@@ -115,10 +117,10 @@ if (config.security.cors.enabled) {
 }
 
 // Rate limiting
-if (config.security?.rateLimit?.enabled) {
+if (config.security?.rateLimiting?.enabled) {
   const limiter = rateLimit({
-    windowMs: config.security.rateLimit.windowMs || 15 * 60 * 1000, // 15 minutes
-    max: config.security.rateLimit.max || 100, // limit each IP to 100 requests per windowMs
+    windowMs: config.security.rateLimiting.windowMs || 15 * 60 * 1000, // 15 minutes
+    max: config.security.rateLimiting.max || 100, // limit each IP to 100 requests per windowMs
     message: 'Too many requests from this IP, please try again later.',
     standardHeaders: true,
     legacyHeaders: false,
@@ -129,6 +131,20 @@ if (config.security?.rateLimit?.enabled) {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Cookie parsing middleware
+app.use(cookieParser);
+app.use(enableCookieResponse);
+
+// Define allowed origins for CSRF protection
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  config.security?.cors?.origin,
+].filter(Boolean);
+
+// Origin validation for all routes
+app.use(validateOrigin(allowedOrigins));
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -259,6 +275,9 @@ app.get('/health/detailed', async (req, res) => {
   res.json(detailedHealth);
 });
 
+// CSRF token endpoint (must be before protected routes)
+app.get('/api/csrf-token', getCsrfToken);
+
 // API Routes
 app.get('/api/status', (req, res) => {
   const stats = llmBridge.getStats();
@@ -281,7 +300,7 @@ app.get('/api/providers', (req, res) => {
   res.json({ providers });
 });
 
-app.post('/api/query', async (req, res) => {
+app.post('/api/query', csrfProtection, async (req, res) => {
   const start = Date.now();
   const { prompt, provider, model, temperature, maxTokens } = req.body;
 
@@ -289,6 +308,29 @@ app.post('/api/query', async (req, res) => {
     if (!prompt) {
       llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
       return res.status(400).json({ error: 'Prompt is required' });
+    }
+
+    // Validate prompt length
+    if (typeof prompt !== 'string' || prompt.length === 0) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'Prompt must be a non-empty string' });
+    }
+
+    if (prompt.length > 50000) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'Prompt exceeds maximum length of 50,000 characters' });
+    }
+
+    // Validate temperature range
+    if (temperature !== undefined && (typeof temperature !== 'number' || temperature < 0 || temperature > 2)) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'Temperature must be a number between 0 and 2' });
+    }
+
+    // Validate maxTokens
+    if (maxTokens !== undefined && (typeof maxTokens !== 'number' || maxTokens < 1 || maxTokens > 100000)) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'maxTokens must be a number between 1 and 100,000' });
     }
 
     const response = await llmBridge.query({
@@ -327,7 +369,7 @@ app.post('/api/query', async (req, res) => {
   }
 });
 
-app.post('/api/stream', async (req, res) => {
+app.post('/api/stream', csrfProtection, async (req, res) => {
   const start = Date.now();
   const { prompt, provider, model, temperature, maxTokens } = req.body;
 
@@ -335,6 +377,29 @@ app.post('/api/stream', async (req, res) => {
     if (!prompt) {
       llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
       return res.status(400).json({ error: 'Prompt is required' });
+    }
+
+    // Validate prompt length
+    if (typeof prompt !== 'string' || prompt.length === 0) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'Prompt must be a non-empty string' });
+    }
+
+    if (prompt.length > 50000) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'Prompt exceeds maximum length of 50,000 characters' });
+    }
+
+    // Validate temperature range
+    if (temperature !== undefined && (typeof temperature !== 'number' || temperature < 0 || temperature > 2)) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'Temperature must be a number between 0 and 2' });
+    }
+
+    // Validate maxTokens
+    if (maxTokens !== undefined && (typeof maxTokens !== 'number' || maxTokens < 1 || maxTokens > 100000)) {
+      llmQueryTotal.labels(provider || 'unknown', model || 'unknown', 'error').inc();
+      return res.status(400).json({ error: 'maxTokens must be a number between 1 and 100,000' });
     }
 
     res.setHeader('Content-Type', 'text/event-stream');
@@ -384,7 +449,7 @@ app.get('/api/models', async (req, res) => {
     const models = await llmBridge.getAllModels();
     res.json(models);
   } catch (error) {
-    console.error('[API] Failed to get models:', error.message);
+    logger.error('[API] Failed to get models', { error: error.message });
     res.status(500).json({ error: error.message });
   }
 });
@@ -402,9 +467,54 @@ if (githubIntegration) {
 
   app.get('/api/github/issues', async (req, res) => {
     try {
+      // Validate query parameters
+      const { state, sort, direction, per_page, page } = req.query;
+
+      // Validate state parameter
+      if (state && !['open', 'closed', 'all'].includes(state)) {
+        return res.status(400).json({
+          error: 'Invalid state parameter. Must be one of: open, closed, all'
+        });
+      }
+
+      // Validate sort parameter
+      if (sort && !['created', 'updated', 'comments'].includes(sort)) {
+        return res.status(400).json({
+          error: 'Invalid sort parameter. Must be one of: created, updated, comments'
+        });
+      }
+
+      // Validate direction parameter
+      if (direction && !['asc', 'desc'].includes(direction)) {
+        return res.status(400).json({
+          error: 'Invalid direction parameter. Must be one of: asc, desc'
+        });
+      }
+
+      // Validate per_page parameter
+      if (per_page !== undefined) {
+        const perPageNum = parseInt(per_page, 10);
+        if (isNaN(perPageNum) || perPageNum < 1 || perPageNum > 100) {
+          return res.status(400).json({
+            error: 'Invalid per_page parameter. Must be a number between 1 and 100'
+          });
+        }
+      }
+
+      // Validate page parameter
+      if (page !== undefined) {
+        const pageNum = parseInt(page, 10);
+        if (isNaN(pageNum) || pageNum < 1) {
+          return res.status(400).json({
+            error: 'Invalid page parameter. Must be a positive number'
+          });
+        }
+      }
+
       const issues = await githubIntegration.listIssues(req.query);
       res.json(issues);
     } catch (error) {
+      logger.error('[API] GitHub issues request failed', { error: error.message });
       res.status(500).json({ error: error.message });
     }
   });

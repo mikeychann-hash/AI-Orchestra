@@ -264,19 +264,27 @@ async def execute_graph(workflow_id: str, workflow_request: WorkflowRequest):
 
     workflow = workflows_store[workflow_id]
     completed_tasks: Dict[str, Any] = {}
+    task_events: Dict[str, asyncio.Event] = {}
 
-    # Build task map
+    # Build task map and create events for each task
     task_map = {
         task_def.agent_id: (i, task_def)
         for i, task_def in enumerate(workflow_request.tasks)
     }
 
+    # Create an event for each task to signal completion
+    for task_def in workflow_request.tasks:
+        task_events[task_def.agent_id] = asyncio.Event()
+
     async def execute_with_deps(task_def: AgentTask, task_idx: int):
         """Execute a task after its dependencies are met"""
-        # Wait for dependencies
+        # Wait for dependencies using events (no polling)
         if task_def.depends_on:
-            while not all(dep_id in completed_tasks for dep_id in task_def.depends_on):
-                await asyncio.sleep(0.1)
+            # Wait for all dependency events to be set
+            await asyncio.gather(*[
+                task_events[dep_id].wait()
+                for dep_id in task_def.depends_on
+            ])
 
         # Gather dependency results
         dep_results = {
@@ -289,6 +297,9 @@ async def execute_graph(workflow_id: str, workflow_request: WorkflowRequest):
 
         # Mark as completed
         completed_tasks[task_def.agent_id] = result
+
+        # Signal completion to dependent tasks
+        task_events[task_def.agent_id].set()
 
         return result
 

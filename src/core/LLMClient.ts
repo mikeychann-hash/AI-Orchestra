@@ -68,16 +68,34 @@ export class LLMClientFactory {
     switch (provider) {
       case LLMProvider.OPENAI:
         const openaiConfig = config.getProviderConfig(LLMProvider.OPENAI);
+        if (!openaiConfig) {
+          throw new Error('OpenAI provider configuration not found. Please check your environment variables.');
+        }
+        if (!openaiConfig.apiKey) {
+          throw new Error('OpenAI API key is missing. Please set OPENAI_API_KEY in your environment.');
+        }
         client = new OpenAIClient(openaiConfig.apiKey, openaiConfig.baseURL);
         break;
 
       case LLMProvider.GROK:
         const grokConfig = config.getProviderConfig(LLMProvider.GROK);
+        if (!grokConfig) {
+          throw new Error('Grok provider configuration not found. Please check your environment variables.');
+        }
+        if (!grokConfig.apiKey) {
+          throw new Error('Grok API key is missing. Please set GROK_API_KEY in your environment.');
+        }
         client = new GrokClient(grokConfig.apiKey);
         break;
 
       case LLMProvider.OLLAMA:
         const ollamaConfig = config.getProviderConfig(LLMProvider.OLLAMA);
+        if (!ollamaConfig) {
+          throw new Error('Ollama provider configuration not found. Please check your environment variables.');
+        }
+        if (!ollamaConfig.endpoint) {
+          throw new Error('Ollama endpoint is missing. Please set OLLAMA_ENDPOINT in your environment.');
+        }
         client = new OllamaClient(ollamaConfig.endpoint);
         break;
 
