@@ -162,7 +162,9 @@ export class LLMBridge {
     const providers = Array.from(this.connectors.keys());
 
     if (providers.length === 0) {
-      throw new Error('No providers available');
+      // Return default provider name even if not configured
+      // The availability check will happen in query() method
+      return this.defaultProvider;
     }
 
     if (providers.length === 1) {

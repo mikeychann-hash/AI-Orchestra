@@ -1,0 +1,2378 @@
+
+> ai-orchestra@0.6.0 test
+> c8 --reporter=text --reporter=html node --test tests/**/*.test.js
+
+TAP version 13
+# [test] Request failed (attempt 1/3), retrying in 10ms...
+# Subtest: Base Connector Tests
+    # Subtest: Abstract Class Enforcement
+        # Subtest: should throw error when instantiated directly
+        ok 1 - should throw error when instantiated directly
+          ---
+          duration_ms: 1.979999
+          type: 'test'
+          ...
+        # Subtest: should allow instantiation through subclass
+        ok 2 - should allow instantiation through subclass
+          ---
+          duration_ms: 0.361341
+          type: 'test'
+          ...
+        # Subtest: should set provider from config
+        not ok 3 - should set provider from config
+          ---
+          duration_ms: 1.527365
+          type: 'test'
+          location: '/home/user/AI-Orchestra/tests/unit/base_connector.test.js:78:5'
+          failureType: 'testCodeFailure'
+          error: |-
+            Expected values to be strictly equal:
+            
+            'test' !== 'custom'
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: 'custom'
+          actual: 'test'
+          operator: 'strictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///home/user/AI-Orchestra/tests/unit/base_connector.test.js:80:14)
+            Test.runInAsyncScope (node:async_hooks:214:14)
+            Test.run (node:internal/test_runner/test:1047:25)
+            Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+            Test.postRun (node:internal/test_runner/test:1173:19)
+            Test.run (node:internal/test_runner/test:1101:12)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        # Subtest: should use default provider if not specified
+        ok 4 - should use default provider if not specified
+          ---
+          duration_ms: 0.233324
+          type: 'test'
+          ...
+        1..4
+    not ok 1 - Abstract Class Enforcement
+      ---
+      duration_ms: 5.324648
+      type: 'suite'
+      location: '/home/user/AI-Orchestra/tests/unit/base_connector.test.js:58:3'
+      failureType: 'subtestsFailed'
+      error: '1 subtest failed'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        async Promise.all (index 0)
+      ...
+    # Subtest: Configuration Defaults
+        # Subtest: should use default retry attempts
+        ok 1 - should use default retry attempts
+          ---
+          duration_ms: 2.10393
+          type: 'test'
+          ...
+        # Subtest: should use custom retry attempts
+        ok 2 - should use custom retry attempts
+          ---
+          duration_ms: 0.167574
+          type: 'test'
+          ...
+        # Subtest: should use default retry delay
+        ok 3 - should use default retry delay
+          ---
+          duration_ms: 0.127993
+          type: 'test'
+          ...
+        # Subtest: should use custom retry delay
+        ok 4 - should use custom retry delay
+          ---
+          duration_ms: 0.122823
+          type: 'test'
+          ...
+        # Subtest: should use default timeout
+        ok 5 - should use default timeout
+          ---
+          duration_ms: 0.091727
+          type: 'test'
+          ...
+        # Subtest: should use custom timeout
+        ok 6 - should use custom timeout
+          ---
+          duration_ms: 0.148935
+          type: 'test'
+          ...
+        1..6
+    ok 2 - Configuration Defaults
+      ---
+      duration_ms: 3.074813
+      type: 'suite'
+      ...
+    # Subtest: Retry Mechanism
+        # Subtest: should succeed on first attempt
+        ok 1 - should succeed on first attempt
+          ---
+          duration_ms: 0.865418
+          type: 'test'
+          ...
+# [test] Request failed (attempt 2/3), retrying in 20ms...
+# [test] Request failed (attempt 1/3), retrying in 10ms...
+        # Subtest: should retry on failure and eventually succeed
+        ok 2 - should retry on failure and eventually succeed
+          ---
+          duration_ms: 40.215403
+          type: 'test'
+          ...
+# [test] Request failed (attempt 2/3), retrying in 20ms...
+# [test] Request failed (attempt 1/4), retrying in 10ms...
+        # Subtest: should throw error after max retries exhausted
+        ok 3 - should throw error after max retries exhausted
+          ---
+          duration_ms: 31.103419
+          type: 'test'
+          ...
+# [test] Request failed (attempt 2/4), retrying in 20ms...
+# [test] Request failed (attempt 3/4), retrying in 40ms...
+# [test] Request failed (attempt 1/2), retrying in 10ms...
+        # Subtest: should use exponential backoff for delays
+        ok 4 - should use exponential backoff for delays
+          ---
+          duration_ms: 71.351057
+          type: 'test'
+          ...
+        # Subtest: should respect custom retry attempts
+        ok 5 - should respect custom retry attempts
+          ---
+          duration_ms: 11.382354
+          type: 'test'
+          ...
+        # Subtest: should pass through successful result immediately
+        ok 6 - should pass through successful result immediately
+          ---
+          duration_ms: 0.402616
+          type: 'test'
+          ...
+        1..6
+    ok 3 - Retry Mechanism
+      ---
+      duration_ms: 155.85102
+      type: 'suite'
+      ...
+    # Subtest: Sleep Utility
+        # Subtest: should delay for specified milliseconds
+        ok 1 - should delay for specified milliseconds
+          ---
+          duration_ms: 50.06341
+          type: 'test'
+          ...
+# [test] Request failed (attempt 1/2), retrying in 10ms...
+        # Subtest: should resolve immediately for 0ms
+        ok 2 - should resolve immediately for 0ms
+          ---
+          duration_ms: 1.095471
+          type: 'test'
+          ...
+        1..2
+    ok 4 - Sleep Utility
+      ---
+      duration_ms: 51.473633
+      type: 'suite'
+      ...
+    # Subtest: Response Standardization
+        # Subtest: should standardize complete response
+        ok 1 - should standardize complete response
+          ---
+          duration_ms: 1.678936
+          type: 'test'
+          ...
+        # Subtest: should handle missing content
+        ok 2 - should handle missing content
+          ---
+          duration_ms: 0.15063
+          type: 'test'
+          ...
+        # Subtest: should handle missing model
+        ok 3 - should handle missing model
+          ---
+          duration_ms: 0.117239
+          type: 'test'
+          ...
+        # Subtest: should handle missing usage
+        ok 4 - should handle missing usage
+          ---
+          duration_ms: 0.147106
+          type: 'test'
+          ...
+        # Subtest: should handle missing metadata
+        ok 5 - should handle missing metadata
+          ---
+          duration_ms: 0.125857
+          type: 'test'
+          ...
+        # Subtest: should add timestamp to response
+        ok 6 - should add timestamp to response
+          ---
+          duration_ms: 0.127658
+          type: 'test'
+          ...
+        # Subtest: should preserve all original fields
+        ok 7 - should preserve all original fields
+          ---
+          duration_ms: 0.156471
+          type: 'test'
+          ...
+        1..7
+    ok 5 - Response Standardization
+      ---
+      duration_ms: 2.807231
+      type: 'suite'
+      ...
+    # Subtest: Error Handling
+        # Subtest: should format basic error
+        ok 1 - should format basic error
+          ---
+          duration_ms: 0.289341
+          type: 'test'
+          ...
+        # Subtest: should include error code if present
+        ok 2 - should include error code if present
+          ---
+          duration_ms: 0.159904
+          type: 'test'
+          ...
+        # Subtest: should use UNKNOWN_ERROR as default code
+        ok 3 - should use UNKNOWN_ERROR as default code
+          ---
+          duration_ms: 0.126289
+          type: 'test'
+          ...
+        # Subtest: should include response status if present
+        ok 4 - should include response status if present
+          ---
+          duration_ms: 0.242185
+          type: 'test'
+          ...
+        # Subtest: should handle error without response
+        ok 5 - should handle error without response
+          ---
+          duration_ms: 0.155465
+          type: 'test'
+          ...
+        # Subtest: should preserve error message
+        ok 6 - should preserve error message
+          ---
+          duration_ms: 0.117904
+          type: 'test'
+          ...
+        1..6
+    ok 6 - Error Handling
+      ---
+      duration_ms: 1.338225
+      type: 'suite'
+      ...
+    # Subtest: Abstract Method Enforcement
+        # Subtest: base query should throw not implemented
+        ok 1 - base query should throw not implemented
+          ---
+          duration_ms: 0.717252
+          type: 'test'
+          ...
+        # Subtest: base streamQuery should throw not implemented
+        not ok 2 - base streamQuery should throw not implemented
+          ---
+          duration_ms: 0.629
+          type: 'test'
+          location: '/home/user/AI-Orchestra/tests/unit/base_connector.test.js:412:5'
+          failureType: 'testCodeFailure'
+          error: 'Missing expected exception (Error).'
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected:
+            name: 'Error'
+            message:
+          operator: 'throws'
+          stack: |-
+            TestContext.<anonymous> (file:///home/user/AI-Orchestra/tests/unit/base_connector.test.js:416:14)
+            Test.runInAsyncScope (node:async_hooks:214:14)
+            Test.run (node:internal/test_runner/test:1047:25)
+            Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+            Test.postRun (node:internal/test_runner/test:1173:19)
+            Test.run (node:internal/test_runner/test:1101:12)
+            async Promise.all (index 0)
+            async Suite.run (node:internal/test_runner/test:1442:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        # Subtest: base validateConfig should throw not implemented
+        ok 3 - base validateConfig should throw not implemented
+          ---
+          duration_ms: 0.300495
+          type: 'test'
+          ...
+        # Subtest: base testConnection should throw not implemented
+        ok 4 - base testConnection should throw not implemented
+          ---
+          duration_ms: 0.282285
+          type: 'test'
+          ...
+        # Subtest: base getModels should throw not implemented
+        ok 5 - base getModels should throw not implemented
+          ---
+          duration_ms: 0.220276
+          type: 'test'
+          ...
+        1..5
+    not ok 7 - Abstract Method Enforcement
+      ---
+      duration_ms: 2.440304
+      type: 'suite'
+      location: '/home/user/AI-Orchestra/tests/unit/base_connector.test.js:396:3'
+      failureType: 'subtestsFailed'
+      error: '1 subtest failed'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: Integration with Subclass
+        # Subtest: subclass should call inherited withRetry
+        ok 1 - subclass should call inherited withRetry
+          ---
+          duration_ms: 21.460109
+          type: 'test'
+          ...
+        # Subtest: subclass should use standardizeResponse
+        ok 2 - subclass should use standardizeResponse
+          ---
+          duration_ms: 0.378528
+          type: 'test'
+          ...
+        1..2
+    ok 8 - Integration with Subclass
+      ---
+      duration_ms: 22.102203
+      type: 'suite'
+      ...
+    1..8
+not ok 1 - Base Connector Tests
+  ---
+  duration_ms: 245.592944
+  type: 'suite'
+  location: '/home/user/AI-Orchestra/tests/unit/base_connector.test.js:57:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Error: Test "base streamQuery should throw not implemented" at tests/unit/base_connector.test.js:412:5 generated asynchronous activity after the test ended. This activity created the error "Error: streamQuery() must be implemented by connector" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[31merror[39m]: [LLMBridge] Failed to initialize OpenAI connector {"service":"ai-orchestra","error":"OpenAI API key is required"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# Subtest: P0/P2 Bug Fixes Validation - Iteration 3
+    # Subtest: Bug \#11 Residual (P0): LLMBridge Null Provider Config
+        # Subtest: LLMBridge should handle null provider config without TypeError
+        ok 1 - LLMBridge should handle null provider config without TypeError
+          ---
+          duration_ms: 5.203829
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle undefined provider config
+        ok 2 - LLMBridge should handle undefined provider config
+          ---
+          duration_ms: 0.745961
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle empty provider config
+        ok 3 - LLMBridge should handle empty provider config
+          ---
+          duration_ms: 0.596178
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle config without providers key
+        ok 4 - LLMBridge should handle config without providers key
+          ---
+          duration_ms: 0.3881
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle null openai provider config
+        ok 5 - LLMBridge should handle null openai provider config
+          ---
+          duration_ms: 0.35281
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle provider with null enabled flag
+        ok 6 - LLMBridge should handle provider with null enabled flag
+          ---
+          duration_ms: 0.363
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle provider with undefined enabled flag
+        ok 7 - LLMBridge should handle provider with undefined enabled flag
+          ---
+          duration_ms: 0.455265
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle provider with missing enabled flag
+        ok 8 - LLMBridge should handle provider with missing enabled flag
+          ---
+          duration_ms: 0.427273
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should provide clear error message when querying with no connectors
+        ok 9 - LLMBridge should provide clear error message when querying with no connectors
+          ---
+          duration_ms: 1.578758
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle null config in query method
+        ok 10 - LLMBridge should handle null config in query method
+          ---
+          duration_ms: 0.525715
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle missing provider parameter in query
+        ok 11 - LLMBridge should handle missing provider parameter in query
+          ---
+          duration_ms: 0.45225
+          type: 'test'
+          ...
+        # Subtest: LLMBridge selectProvider should handle no available providers
+        ok 12 - LLMBridge selectProvider should handle no available providers
+          ---
+          duration_ms: 0.398047
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle mixed null and valid providers
+        ok 13 - LLMBridge should handle mixed null and valid providers
+          ---
+          duration_ms: 0.340652
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should continue functioning with one valid provider despite null others
+        ok 14 - LLMBridge should continue functioning with one valid provider despite null others
+          ---
+          duration_ms: 1.124547
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle deeply nested null config
+        ok 15 - LLMBridge should handle deeply nested null config
+          ---
+          duration_ms: 0.861665
+          type: 'test'
+          ...
+        1..15
+    ok 1 - Bug \#11 Residual (P0): LLMBridge Null Provider Config
+      ---
+      duration_ms: 15.252062
+      type: 'suite'
+      ...
+    # Subtest: Bug \#9 (P2): Winston Logger Usage
+        # Subtest: LLMBridge should use logger instead of console.log
+        ok 1 - LLMBridge should use logger instead of console.log
+          ---
+          duration_ms: 0.600091
+          type: 'test'
+          ...
+        # Subtest: Server should use winston for logging
+        ok 2 - Server should use winston for logging
+          ---
+          duration_ms: 0.70047
+          type: 'test'
+          ...
+        # Subtest: Connectors should use winston for logging
+        ok 3 - Connectors should use winston for logging
+          ---
+          duration_ms: 1.707273
+          type: 'test'
+          ...
+        # Subtest: Logger should have proper log levels
+        ok 4 - Logger should have proper log levels
+          ---
+          duration_ms: 0.187574
+          type: 'test'
+          ...
+        # Subtest: Logger should format logs consistently
+        ok 5 - Logger should format logs consistently
+          ---
+          duration_ms: 0.159861
+          type: 'test'
+          ...
+        1..5
+    ok 2 - Bug \#9 (P2): Winston Logger Usage
+      ---
+      duration_ms: 3.801224
+      type: 'suite'
+      ...
+    # Subtest: Bug \#10 (P2): Input Validation on Endpoints
+        # Subtest: Query endpoint should validate prompt field
+        ok 1 - Query endpoint should validate prompt field
+          ---
+          duration_ms: 0.61535
+          type: 'test'
+          ...
+        # Subtest: Query endpoint should validate temperature range
+        ok 2 - Query endpoint should validate temperature range
+          ---
+          duration_ms: 0.323297
+          type: 'test'
+          ...
+        # Subtest: Query endpoint should validate maxTokens
+        ok 3 - Query endpoint should validate maxTokens
+          ---
+          duration_ms: 0.132187
+          type: 'test'
+          ...
+        # Subtest: Query endpoint should validate prompt length
+        ok 4 - Query endpoint should validate prompt length
+          ---
+          duration_ms: 0.117555
+          type: 'test'
+          ...
+        # Subtest: Query endpoint should validate provider parameter
+        ok 5 - Query endpoint should validate provider parameter
+          ---
+          duration_ms: 0.090782
+          type: 'test'
+          ...
+        # Subtest: Query endpoint should validate model parameter format
+        ok 6 - Query endpoint should validate model parameter format
+          ---
+          duration_ms: 0.090133
+          type: 'test'
+          ...
+        # Subtest: Stream endpoint should have similar validation as query
+        ok 7 - Stream endpoint should have similar validation as query
+          ---
+          duration_ms: 0.084699
+          type: 'test'
+          ...
+        # Subtest: Validation errors should return consistent format
+        ok 8 - Validation errors should return consistent format
+          ---
+          duration_ms: 0.094727
+          type: 'test'
+          ...
+        # Subtest: Validation should sanitize input to prevent injection
+        ok 9 - Validation should sanitize input to prevent injection
+          ---
+          duration_ms: 0.107019
+          type: 'test'
+          ...
+        # Subtest: Validation should handle edge cases
+        ok 10 - Validation should handle edge cases
+          ---
+          duration_ms: 0.123646
+          type: 'test'
+          ...
+        1..10
+    ok 3 - Bug \#10 (P2): Input Validation on Endpoints
+      ---
+      duration_ms: 2.137991
+      type: 'suite'
+      ...
+    # Subtest: Bug \#13 (P2): Event-Based Waiting Instead of Polling
+        # Subtest: Python orchestrator should use event-based waiting
+        ok 1 - Python orchestrator should use event-based waiting
+          ---
+          duration_ms: 0.494885
+          type: 'test'
+          ...
+        # Subtest: Event-based waiting should be more efficient than polling
+        ok 2 - Event-based waiting should be more efficient than polling
+          ---
+          duration_ms: 0.149169
+          type: 'test'
+          ...
+        # Subtest: Event-based waiting should handle timeouts
+        ok 3 - Event-based waiting should handle timeouts
+          ---
+          duration_ms: 0.184647
+          type: 'test'
+          ...
+        # Subtest: Event-based waiting should be thread-safe
+        ok 4 - Event-based waiting should be thread-safe
+          ---
+          duration_ms: 0.11798
+          type: 'test'
+          ...
+        # Subtest: Event-based waiting should handle multiple waiters
+        ok 5 - Event-based waiting should handle multiple waiters
+          ---
+          duration_ms: 0.102065
+          type: 'test'
+          ...
+        1..5
+    ok 4 - Bug \#13 (P2): Event-Based Waiting Instead of Polling
+      ---
+      duration_ms: 1.296801
+      type: 'suite'
+      ...
+    # Subtest: Regression Tests - Ensure No Regressions from Iterations 1 & 2
+        # Subtest: ConfigManager still handles null configs after Bug \#11 fix
+        ok 1 - ConfigManager still handles null configs after Bug \#11 fix
+          ---
+          duration_ms: 2.209472
+          type: 'test'
+          ...
+        # Subtest: LLMBridge initialization does not throw after fixes
+        ok 2 - LLMBridge initialization does not throw after fixes
+          ---
+          duration_ms: 0.460986
+          type: 'test'
+          ...
+        # Subtest: All previous P1 bug fixes still work
+        ok 3 - All previous P1 bug fixes still work
+          ---
+          duration_ms: 0.170958
+          type: 'test'
+          ...
+        # Subtest: Coverage should not decrease after new changes
+        ok 4 - Coverage should not decrease after new changes
+          ---
+          duration_ms: 0.131928
+          type: 'test'
+          ...
+        # Subtest: All 340 existing tests should still pass
+        ok 5 - All 340 existing tests should still pass
+          ---
+          duration_ms: 0.132148
+          type: 'test'
+          ...
+        1..5
+    ok 5 - Regression Tests - Ensure No Regressions from Iterations 1 & 2
+      ---
+      duration_ms: 3.343921
+      type: 'suite'
+      ...
+    # Subtest: Defense in Depth - Additional Safety Tests
+        # Subtest: LLMBridge should handle array instead of object config
+        ok 1 - LLMBridge should handle array instead of object config
+          ---
+          duration_ms: 0.468202
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle string instead of object config
+        ok 2 - LLMBridge should handle string instead of object config
+          ---
+          duration_ms: 0.376408
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle number instead of object config
+        ok 3 - LLMBridge should handle number instead of object config
+          ---
+          duration_ms: 0.397284
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle boolean instead of object config
+        ok 4 - LLMBridge should handle boolean instead of object config
+          ---
+          duration_ms: 0.358135
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle circular reference in config
+        ok 5 - LLMBridge should handle circular reference in config
+          ---
+          duration_ms: 0.400102
+          type: 'test'
+          ...
+        1..5
+    ok 6 - Defense in Depth - Additional Safety Tests
+      ---
+      duration_ms: 2.275735
+      type: 'suite'
+      ...
+    1..6
+ok 2 - P0/P2 Bug Fixes Validation - Iteration 3
+  ---
+  duration_ms: 28.991108
+  type: 'suite'
+  ...
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# Subtest: P1 Bug Fixes Validation
+    # Subtest: Bug \#11: Config Null Checks
+        # Subtest: ConfigManager should handle missing config file gracefully
+        ok 1 - ConfigManager should handle missing config file gracefully
+          ---
+          duration_ms: 2.690536
+          type: 'test'
+          ...
+        # Subtest: ConfigManager should provide default values for missing fields
+        ok 2 - ConfigManager should provide default values for missing fields
+          ---
+          duration_ms: 0.562236
+          type: 'test'
+          ...
+        # Subtest: ConfigManager should handle null application config
+        ok 3 - ConfigManager should handle null application config
+          ---
+          duration_ms: 0.516324
+          type: 'test'
+          ...
+        # Subtest: ConfigManager should handle null provider config
+        ok 4 - ConfigManager should handle null provider config
+          ---
+          duration_ms: 0.601301
+          type: 'test'
+          ...
+        # Subtest: ConfigManager should handle missing nested fields
+        ok 5 - ConfigManager should handle missing nested fields
+          ---
+          duration_ms: 0.492762
+          type: 'test'
+          ...
+        # Subtest: ConfigManager should handle undefined security config
+        ok 6 - ConfigManager should handle undefined security config
+          ---
+          duration_ms: 0.523792
+          type: 'test'
+          ...
+        # Subtest: ConfigManager should handle null CORS config
+        ok 7 - ConfigManager should handle null CORS config
+          ---
+          duration_ms: 0.512356
+          type: 'test'
+          ...
+        # Subtest: ConfigManager should handle null rate limiting config
+        ok 8 - ConfigManager should handle null rate limiting config
+          ---
+          duration_ms: 0.595015
+          type: 'test'
+          ...
+        # Subtest: ConfigManager should handle null WebSocket config
+        ok 9 - ConfigManager should handle null WebSocket config
+          ---
+          duration_ms: 0.43469
+          type: 'test'
+          ...
+        # Subtest: ConfigManager should handle null logging config
+        ok 10 - ConfigManager should handle null logging config
+          ---
+          duration_ms: 0.525727
+          type: 'test'
+          ...
+        # Subtest: ConfigManager.validate should handle null config
+        ok 11 - ConfigManager.validate should handle null config
+          ---
+          duration_ms: 0.712379
+          type: 'test'
+          ...
+        # Subtest: ConfigManager should not throw TypeError on null access
+        ok 12 - ConfigManager should not throw TypeError on null access
+          ---
+          duration_ms: 0.637787
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle null provider config
+        ok 13 - LLMBridge should handle null provider config
+          ---
+          duration_ms: 4.918962
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle undefined provider config
+        ok 14 - LLMBridge should handle undefined provider config
+          ---
+          duration_ms: 0.393717
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle empty provider config
+        ok 15 - LLMBridge should handle empty provider config
+          ---
+          duration_ms: 0.398597
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle null defaultProvider
+        ok 16 - LLMBridge should handle null defaultProvider
+          ---
+          duration_ms: 0.347683
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should handle null loadBalancing
+        ok 17 - LLMBridge should handle null loadBalancing
+          ---
+          duration_ms: 0.336273
+          type: 'test'
+          ...
+        # Subtest: LLMBridge should provide fallback defaults
+        ok 18 - LLMBridge should provide fallback defaults
+          ---
+          duration_ms: 0.358195
+          type: 'test'
+          ...
+        1..18
+    ok 1 - Bug \#11: Config Null Checks
+      ---
+      duration_ms: 17.020651
+      type: 'suite'
+      ...
+    # Subtest: Bug \#6: EventSource Security (Validation)
+        # Subtest: should document that POST should be used for streaming
+        ok 1 - should document that POST should be used for streaming
+          ---
+          duration_ms: 0.149812
+          type: 'test'
+          ...
+        # Subtest: should validate that sensitive data is not in URL query params
+        ok 2 - should validate that sensitive data is not in URL query params
+          ---
+          duration_ms: 0.143786
+          type: 'test'
+          ...
+        # Subtest: should validate request body contains stream parameters
+        ok 3 - should validate request body contains stream parameters
+          ---
+          duration_ms: 0.118239
+          type: 'test'
+          ...
+        # Subtest: should validate EventSource can work with POST via proxy
+        ok 4 - should validate EventSource can work with POST via proxy
+          ---
+          duration_ms: 0.08679
+          type: 'test'
+          ...
+        1..4
+    ok 2 - Bug \#6: EventSource Security (Validation)
+      ---
+      duration_ms: 0.675712
+      type: 'suite'
+      ...
+    # Subtest: Bug \#7: CSRF Protection (Validation)
+        # Subtest: should validate CSRF token structure
+        ok 1 - should validate CSRF token structure
+          ---
+          duration_ms: 0.418012
+          type: 'test'
+          ...
+        # Subtest: should validate that CSRF tokens are required for POST requests
+        ok 2 - should validate that CSRF tokens are required for POST requests
+          ---
+          duration_ms: 0.193477
+          type: 'test'
+          ...
+        # Subtest: should validate SameSite cookie configuration
+        ok 3 - should validate SameSite cookie configuration
+          ---
+          duration_ms: 0.188784
+          type: 'test'
+          ...
+        # Subtest: should validate origin checking for CORS
+        ok 4 - should validate origin checking for CORS
+          ---
+          duration_ms: 0.100457
+          type: 'test'
+          ...
+        # Subtest: should reject requests without valid CSRF token
+        ok 5 - should reject requests without valid CSRF token
+          ---
+          duration_ms: 0.102701
+          type: 'test'
+          ...
+        # Subtest: should validate CSRF token expiration
+        ok 6 - should validate CSRF token expiration
+          ---
+          duration_ms: 0.15622
+          type: 'test'
+          ...
+        # Subtest: should validate secure cookie settings in production
+        ok 7 - should validate secure cookie settings in production
+          ---
+          duration_ms: 0.126177
+          type: 'test'
+          ...
+        1..7
+    ok 3 - Bug \#7: CSRF Protection (Validation)
+      ---
+      duration_ms: 1.542832
+      type: 'suite'
+      ...
+    # Subtest: Bug \#6 & \#7: Integration Security Tests
+        # Subtest: should validate that streaming endpoint uses secure methods
+        ok 1 - should validate that streaming endpoint uses secure methods
+          ---
+          duration_ms: 0.226675
+          type: 'test'
+          ...
+        # Subtest: should validate query endpoint security
+        ok 2 - should validate query endpoint security
+          ---
+          duration_ms: 0.107193
+          type: 'test'
+          ...
+        # Subtest: should validate that GET endpoints do not accept sensitive data
+        ok 3 - should validate that GET endpoints do not accept sensitive data
+          ---
+          duration_ms: 0.109818
+          type: 'test'
+          ...
+        1..3
+    ok 4 - Bug \#6 & \#7: Integration Security Tests
+      ---
+      duration_ms: 0.573967
+      type: 'suite'
+      ...
+    # Subtest: Regression Tests
+        # Subtest: should not allow null pointer exceptions in config access
+        ok 1 - should not allow null pointer exceptions in config access
+          ---
+          duration_ms: 1.201837
+          type: 'test'
+          ...
+        # Subtest: should maintain backward compatibility with valid configs
+        ok 2 - should maintain backward compatibility with valid configs
+          ---
+          duration_ms: 0.646583
+          type: 'test'
+          ...
+        # Subtest: should handle edge cases without crashing
+        ok 3 - should handle edge cases without crashing
+          ---
+          duration_ms: 0.81724
+          type: 'test'
+          ...
+        # Subtest: should not leak sensitive data in error messages
+        ok 4 - should not leak sensitive data in error messages
+          ---
+          duration_ms: 0.183596
+          type: 'test'
+          ...
+        # Subtest: should validate that all critical paths have null checks
+        ok 5 - should validate that all critical paths have null checks
+          ---
+          duration_ms: 0.628833
+          type: 'test'
+          ...
+        # Subtest: should handle concurrent null config access
+        ok 6 - should handle concurrent null config access
+          ---
+          duration_ms: 3.692937
+          type: 'test'
+          ...
+        1..6
+    ok 5 - Regression Tests
+      ---
+      duration_ms: 7.561341
+      type: 'suite'
+      ...
+    # Subtest: Defense in Depth
+        # Subtest: should implement multiple layers of security
+        ok 1 - should implement multiple layers of security
+          ---
+          duration_ms: 0.251364
+          type: 'test'
+          ...
+        # Subtest: should fail securely on errors
+        ok 2 - should fail securely on errors
+          ---
+          duration_ms: 0.196983
+          type: 'test'
+          ...
+        # Subtest: should validate all user input
+        ok 3 - should validate all user input
+          ---
+          duration_ms: 0.17309
+          type: 'test'
+          ...
+        # Subtest: should implement proper error boundaries
+        ok 4 - should implement proper error boundaries
+          ---
+          duration_ms: 0.30371
+          type: 'test'
+          ...
+        1..4
+    ok 6 - Defense in Depth
+      ---
+      duration_ms: 1.149573
+      type: 'suite'
+      ...
+    1..6
+ok 3 - P1 Bug Fixes Validation
+  ---
+  duration_ms: 29.308133
+  type: 'suite'
+  ...
+# Subtest: Bug Fix Validation (P0)
+    # Subtest: Bug \#1: Memory Leak Fix (CRITICAL)
+        # Subtest: should have cleanup mechanism for activeRuns Map
+        ok 1 - should have cleanup mechanism for activeRuns Map
+          ---
+          duration_ms: 1.00604
+          type: 'test'
+          ...
+        # Subtest: should track timestamp for each run
+        ok 2 - should track timestamp for each run
+          ---
+          duration_ms: 0.256927
+          type: 'test'
+          ...
+        # Subtest: should delete runs older than MAX_RUN_AGE
+        ok 3 - should delete runs older than MAX_RUN_AGE
+          ---
+          duration_ms: 0.19497
+          type: 'test'
+          ...
+        # Subtest: should limit total runs to MAX_RUNS
+        ok 4 - should limit total runs to MAX_RUNS
+          ---
+          duration_ms: 0.357378
+          type: 'test'
+          ...
+        # Subtest: should run cleanup interval periodically
+        ok 5 - should run cleanup interval periodically
+          ---
+          duration_ms: 0.131514
+          type: 'test'
+          ...
+        # Subtest: should log cleanup operations
+        ok 6 - should log cleanup operations
+          ---
+          duration_ms: 0.114081
+          type: 'test'
+          ...
+        # Subtest: should prevent unbounded memory growth
+        ok 7 - should prevent unbounded memory growth
+          ---
+          duration_ms: 1.5795
+          type: 'test'
+          ...
+        # Subtest: should enable horizontal scaling (future)
+        ok 8 - should enable horizontal scaling (future)
+          ---
+          duration_ms: 0.14801
+          type: 'test'
+          ...
+        1..8
+    ok 1 - Bug \#1: Memory Leak Fix (CRITICAL)
+      ---
+      duration_ms: 4.984297
+      type: 'suite'
+      ...
+    # Subtest: Bug \#2: WebSocket Infinite Loop Fix (CRITICAL)
+        # Subtest: should use useRef instead of useState for reconnectAttempts
+        ok 1 - should use useRef instead of useState for reconnectAttempts
+          ---
+          duration_ms: 0.254054
+          type: 'test'
+          ...
+        # Subtest: should not include reconnectAttempts in useCallback dependency array
+        ok 2 - should not include reconnectAttempts in useCallback dependency array
+          ---
+          duration_ms: 0.113003
+          type: 'test'
+          ...
+        # Subtest: should increment reconnectAttemptsRef without triggering re-render
+        ok 3 - should increment reconnectAttemptsRef without triggering re-render
+          ---
+          duration_ms: 0.108412
+          type: 'test'
+          ...
+        # Subtest: should reset reconnectAttemptsRef on successful connection
+        ok 4 - should reset reconnectAttemptsRef on successful connection
+          ---
+          duration_ms: 0.090373
+          type: 'test'
+          ...
+        # Subtest: should respect maxReconnectAttempts limit
+        ok 5 - should respect maxReconnectAttempts limit
+          ---
+          duration_ms: 0.096158
+          type: 'test'
+          ...
+        # Subtest: should eliminate infinite loop
+        ok 6 - should eliminate infinite loop
+          ---
+          duration_ms: 0.083543
+          type: 'test'
+          ...
+        # Subtest: should prevent 100% CPU usage on client
+        ok 7 - should prevent 100% CPU usage on client
+          ---
+          duration_ms: 0.077469
+          type: 'test'
+          ...
+        # Subtest: should stabilize WebSocket connections
+        ok 8 - should stabilize WebSocket connections
+          ---
+          duration_ms: 0.087563
+          type: 'test'
+          ...
+        1..8
+    ok 2 - Bug \#2: WebSocket Infinite Loop Fix (CRITICAL)
+      ---
+      duration_ms: 1.307433
+      type: 'suite'
+      ...
+    # Subtest: Bug \#3: Rate Limiting Fix (HIGH)
+        # Subtest: should use correct config property rateLimiting
+        ok 1 - should use correct config property rateLimiting
+          ---
+          duration_ms: 0.228143
+          type: 'test'
+          ...
+        # Subtest: should not check for rateLimit property (old bug)
+        ok 2 - should not check for rateLimit property (old bug)
+          ---
+          duration_ms: 0.106038
+          type: 'test'
+          ...
+        # Subtest: should enable DoS protection
+        ok 3 - should enable DoS protection
+          ---
+          duration_ms: 0.083779
+          type: 'test'
+          ...
+        # Subtest: should use default rate limit values
+        ok 4 - should use default rate limit values
+          ---
+          duration_ms: 0.09402
+          type: 'test'
+          ...
+        # Subtest: should return 429 when rate limit exceeded
+        ok 5 - should return 429 when rate limit exceeded
+          ---
+          duration_ms: 0.089772
+          type: 'test'
+          ...
+        # Subtest: should log rate limiting activation
+        ok 6 - should log rate limiting activation
+          ---
+          duration_ms: 0.090401
+          type: 'test'
+          ...
+        # Subtest: should prevent API abuse
+        ok 7 - should prevent API abuse
+          ---
+          duration_ms: 0.120225
+          type: 'test'
+          ...
+        1..7
+    ok 3 - Bug \#3: Rate Limiting Fix (HIGH)
+      ---
+      duration_ms: 1.043955
+      type: 'suite'
+      ...
+    # Subtest: Bug \#4: Deprecated API Fix (HIGH)
+        # Subtest: should use substring instead of substr
+        ok 1 - should use substring instead of substr
+          ---
+          duration_ms: 0.375911
+          type: 'test'
+          ...
+        # Subtest: should generate valid run IDs with substring
+        ok 2 - should generate valid run IDs with substring
+          ---
+          duration_ms: 0.183844
+          type: 'test'
+          ...
+        # Subtest: should not use deprecated substr method
+        ok 3 - should not use deprecated substr method
+          ---
+          duration_ms: 0.111223
+          type: 'test'
+          ...
+        # Subtest: should be compatible with future Node.js versions
+        ok 4 - should be compatible with future Node.js versions
+          ---
+          duration_ms: 0.119487
+          type: 'test'
+          ...
+        # Subtest: should handle substring edge cases
+        ok 5 - should handle substring edge cases
+          ---
+          duration_ms: 0.12357
+          type: 'test'
+          ...
+        # Subtest: should not trigger deprecation warnings
+        ok 6 - should not trigger deprecation warnings
+          ---
+          duration_ms: 0.094605
+          type: 'test'
+          ...
+        1..6
+    ok 4 - Bug \#4: Deprecated API Fix (HIGH)
+      ---
+      duration_ms: 1.249995
+      type: 'suite'
+      ...
+    # Subtest: Overall Bug Fix Impact
+        # Subtest: should improve production readiness from 65% to 75%
+        ok 1 - should improve production readiness from 65% to 75%
+          ---
+          duration_ms: 0.166371
+          type: 'test'
+          ...
+        # Subtest: should fix all CRITICAL bugs
+        ok 2 - should fix all CRITICAL bugs
+          ---
+          duration_ms: 0.126864
+          type: 'test'
+          ...
+        # Subtest: should fix all HIGH priority bugs
+        ok 3 - should fix all HIGH priority bugs
+          ---
+          duration_ms: 0.100991
+          type: 'test'
+          ...
+        # Subtest: should enable long-running production deployments
+        ok 4 - should enable long-running production deployments
+          ---
+          duration_ms: 0.11048
+          type: 'test'
+          ...
+        # Subtest: should stabilize client connections
+        ok 5 - should stabilize client connections
+          ---
+          duration_ms: 0.088308
+          type: 'test'
+          ...
+        # Subtest: should protect against DoS attacks
+        ok 6 - should protect against DoS attacks
+          ---
+          duration_ms: 0.103161
+          type: 'test'
+          ...
+        # Subtest: should ensure future compatibility
+        ok 7 - should ensure future compatibility
+          ---
+          duration_ms: 2.013121
+          type: 'test'
+          ...
+        1..7
+    ok 5 - Overall Bug Fix Impact
+      ---
+      duration_ms: 2.971727
+      type: 'suite'
+      ...
+    1..5
+ok 4 - Bug Fix Validation (P0)
+  ---
+  duration_ms: 12.299972
+  type: 'suite'
+  ...
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Ollama connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# Subtest: LLM Bridge Advanced Tests
+    # Subtest: getConnector() method
+        # Subtest: should return specific connector
+        ok 1 - should return specific connector
+          ---
+          duration_ms: 5.874396
+          type: 'test'
+          ...
+        # Subtest: should return undefined for non-existent provider
+        ok 2 - should return undefined for non-existent provider
+          ---
+          duration_ms: 0.566495
+          type: 'test'
+          ...
+        # Subtest: should return undefined when no connectors initialized
+        ok 3 - should return undefined when no connectors initialized
+          ---
+          duration_ms: 0.46174
+          type: 'test'
+          ...
+        # Subtest: should handle null provider name
+        ok 4 - should handle null provider name
+          ---
+          duration_ms: 0.440999
+          type: 'test'
+          ...
+        # Subtest: should handle undefined provider name
+        ok 5 - should handle undefined provider name
+          ---
+          duration_ms: 0.508911
+          type: 'test'
+          ...
+        1..5
+    ok 1 - getConnector() method
+      ---
+      duration_ms: 8.776377
+      type: 'suite'
+      ...
+    # Subtest: getAvailableProviders() method
+        # Subtest: should return list of available providers
+        ok 1 - should return list of available providers
+          ---
+          duration_ms: 0.478626
+          type: 'test'
+          ...
+        # Subtest: should return empty array when no providers
+        ok 2 - should return empty array when no providers
+          ---
+          duration_ms: 0.31171
+          type: 'test'
+          ...
+        # Subtest: should return multiple providers
+        ok 3 - should return multiple providers
+          ---
+          duration_ms: 0.694776
+          type: 'test'
+          ...
+        # Subtest: should not include disabled providers
+        ok 4 - should not include disabled providers
+          ---
+          duration_ms: 0.510833
+          type: 'test'
+          ...
+        1..4
+    ok 2 - getAvailableProviders() method
+      ---
+      duration_ms: 2.189334
+      type: 'suite'
+      ...
+# [Grok] Connection test failed: Request failed with status code 403
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+    # Subtest: testAllConnections() method
+        # Subtest: should return results object
+        ok 1 - should return results object
+          ---
+          duration_ms: 63.160709
+          type: 'test'
+          ...
+# [Grok] Connection test failed: Request failed with status code 403
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Ollama connector initialized {"service":"ai-orchestra"}
+        # Subtest: should mark connection as failed with error
+        not ok 2 - should mark connection as failed with error
+          ---
+          duration_ms: 15.024128
+          type: 'test'
+          location: '/home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:173:5'
+          failureType: 'testCodeFailure'
+          error: |-
+            The expression evaluated to a falsy value:
+            
+              assert.ok(results.grok.error)
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: true
+          actual: ~
+          operator: '=='
+          stack: |-
+            TestContext.<anonymous> (file:///home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:185:14)
+            process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        # Subtest: should return empty object for no providers
+        ok 3 - should return empty object for no providers
+          ---
+          duration_ms: 2.198542
+          type: 'test'
+          ...
+# [Grok] Connection test failed: Request failed with status code 403
+# [Ollama] Connection test failed: fetch failed
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+        # Subtest: should test multiple providers
+        ok 4 - should test multiple providers
+          ---
+          duration_ms: 21.021897
+          type: 'test'
+          ...
+# [Grok] Connection test failed: Request failed with status code 403
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+        # Subtest: should handle connector that throws during test
+        ok 5 - should handle connector that throws during test
+          ---
+          duration_ms: 7.694894
+          type: 'test'
+          ...
+        1..5
+    not ok 3 - testAllConnections() method
+      ---
+      duration_ms: 109.715332
+      type: 'suite'
+      location: '/home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:157:3'
+      failureType: 'subtestsFailed'
+      error: '1 subtest failed'
+      code: 'ERR_TEST_FAILURE'
+      ...
+# [Grok] Failed to get models: Request failed with status code 403
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+    # Subtest: getAllModels() method
+        # Subtest: should return models object
+        ok 1 - should return models object
+          ---
+          duration_ms: 6.820136
+          type: 'test'
+          ...
+# [Grok] Failed to get models: Request failed with status code 403
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Ollama connector initialized {"service":"ai-orchestra"}
+        # Subtest: should return empty arrays for failed providers
+        ok 2 - should return empty arrays for failed providers
+          ---
+          duration_ms: 3.102353
+          type: 'test'
+          ...
+        # Subtest: should return empty object for no providers
+        ok 3 - should return empty object for no providers
+          ---
+          duration_ms: 0.579901
+          type: 'test'
+          ...
+# [Grok] Failed to get models: Request failed with status code 403
+# [Ollama] Failed to get models: fetch failed
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Ollama connector initialized {"service":"ai-orchestra"}
+        # Subtest: should get models from multiple providers
+        ok 4 - should get models from multiple providers
+          ---
+          duration_ms: 5.198603
+          type: 'test'
+          ...
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Ollama connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Ollama connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Ollama connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Ollama connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[31merror[39m]: [LLMBridge] Failed to initialize Grok connector {"service":"ai-orchestra","error":"Grok API key is required"}
+# 2025-11-13 14:28:36 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:36 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# [Grok] Failed to get models: Request failed with status code 403
+# [Ollama] Failed to get models: fetch failed
+        # Subtest: should continue if one provider fails
+        ok 5 - should continue if one provider fails
+          ---
+          duration_ms: 4.392411
+          type: 'test'
+          ...
+        1..5
+    ok 4 - getAllModels() method
+      ---
+      duration_ms: 20.518886
+      type: 'suite'
+      ...
+    # Subtest: getStats() method
+        # Subtest: should return stats object with correct structure
+        not ok 1 - should return stats object with correct structure
+          ---
+          duration_ms: 1.384353
+          type: 'test'
+          location: '/home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:317:5'
+          failureType: 'testCodeFailure'
+          error: |-
+            The expression evaluated to a falsy value:
+            
+              assert.ok('enableFallback' in stats)
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: true
+          actual: false
+          operator: '=='
+          stack: |-
+            TestContext.<anonymous> (file:///home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:333:14)
+            Test.runInAsyncScope (node:async_hooks:214:14)
+            Test.run (node:internal/test_runner/test:1047:25)
+            Test.start (node:internal/test_runner/test:944:17)
+            node:internal/test_runner/test:1440:71
+            node:internal/per_context/primordials:464:82
+            new Promise (<anonymous>)
+            new SafePromise (node:internal/per_context/primordials:433:3)
+            node:internal/per_context/primordials:464:9
+            Array.map (<anonymous>)
+          ...
+        # Subtest: should show correct connector count
+        ok 2 - should show correct connector count
+          ---
+          duration_ms: 0.664228
+          type: 'test'
+          ...
+        # Subtest: should show zero connectors when none initialized
+        ok 3 - should show zero connectors when none initialized
+          ---
+          duration_ms: 0.33546
+          type: 'test'
+          ...
+        # Subtest: should include provider names
+        ok 4 - should include provider names
+          ---
+          duration_ms: 0.541764
+          type: 'test'
+          ...
+        # Subtest: should include load balancing strategy
+        ok 5 - should include load balancing strategy
+          ---
+          duration_ms: 0.550083
+          type: 'test'
+          ...
+        # Subtest: should include default provider
+        ok 6 - should include default provider
+          ---
+          duration_ms: 0.533845
+          type: 'test'
+          ...
+        # Subtest: should include fallback setting
+        not ok 7 - should include fallback setting
+          ---
+          duration_ms: 1.142164
+          type: 'test'
+          location: '/home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:410:5'
+          failureType: 'testCodeFailure'
+          error: |-
+            Expected values to be strictly equal:
+            + actual - expected
+            
+            + undefined
+            - true
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: true
+          operator: 'strictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:422:14)
+            Test.runInAsyncScope (node:async_hooks:214:14)
+            Test.run (node:internal/test_runner/test:1047:25)
+            Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+            Test.postRun (node:internal/test_runner/test:1173:19)
+            Test.run (node:internal/test_runner/test:1101:12)
+            process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        1..7
+    not ok 5 - getStats() method
+      ---
+      duration_ms: 5.530805
+      type: 'suite'
+      location: '/home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:316:3'
+      failureType: 'subtestsFailed'
+      error: '2 subtests failed'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: Load Balancing
+        # Subtest: should use round-robin strategy
+        ok 1 - should use round-robin strategy
+          ---
+          duration_ms: 0.967716
+          type: 'test'
+          ...
+        # Subtest: should use random strategy
+        ok 2 - should use random strategy
+          ---
+          duration_ms: 0.82243
+          type: 'test'
+          ...
+        # Subtest: should use default strategy
+        ok 3 - should use default strategy
+          ---
+          duration_ms: 0.558367
+          type: 'test'
+          ...
+        # Subtest: should return single provider when only one available
+        ok 4 - should return single provider when only one available
+          ---
+          duration_ms: 0.372936
+          type: 'test'
+          ...
+        1..4
+    ok 6 - Load Balancing
+      ---
+      duration_ms: 2.935567
+      type: 'suite'
+      ...
+    # Subtest: Configuration Edge Cases
+        # Subtest: should handle empty providers object
+        ok 1 - should handle empty providers object
+          ---
+          duration_ms: 0.458936
+          type: 'test'
+          ...
+        # Subtest: should handle null providers
+        ok 2 - should handle null providers
+          ---
+          duration_ms: 0.384808
+          type: 'test'
+          ...
+        # Subtest: should handle undefined providers
+        ok 3 - should handle undefined providers
+          ---
+          duration_ms: 0.464652
+          type: 'test'
+          ...
+        # Subtest: should handle providers without enabled flag
+        ok 4 - should handle providers without enabled flag
+          ---
+          duration_ms: 0.476637
+          type: 'test'
+          ...
+        # Subtest: should handle invalid load balancing strategy
+        ok 5 - should handle invalid load balancing strategy
+          ---
+          duration_ms: 0.550487
+          type: 'test'
+          ...
+        # Subtest: should handle missing API keys
+        ok 6 - should handle missing API keys
+          ---
+          duration_ms: 1.048709
+          type: 'test'
+          ...
+        1..6
+    ok 7 - Configuration Edge Cases
+      ---
+      duration_ms: 3.727503
+      type: 'suite'
+      ...
+# [grok] Request failed (attempt 1/3), retrying in 1000ms...
+# [grok] Request failed (attempt 2/3), retrying in 2000ms...
+# 2025-11-13 14:28:39 [[31merror[39m]: [LLMBridge] Query failed for provider "grok" {"service":"ai-orchestra","error":"{\\"provider\\":\\"grok\\",\\"message\\":\\"Request failed with status code 403\\",\\"code\\":\\"ERR_BAD_REQUEST\\",\\"timestamp\\":\\"2025-11-13T14:28:39.395Z\\",\\"status\\":403,\\"statusText\\":\\"Forbidden\\",\\"data\\":\\"Access denied\\"}"}
+# 2025-11-13 14:28:39 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+    # Subtest: Query Edge Cases
+        # Subtest: should reject query with empty prompt
+        ok 1 - should reject query with empty prompt
+          ---
+          duration_ms: 3030.172441
+          type: 'test'
+          ...
+# [grok] Request failed (attempt 1/3), retrying in 1000ms...
+# [grok] Request failed (attempt 2/3), retrying in 2000ms...
+# 2025-11-13 14:28:42 [[31merror[39m]: [LLMBridge] Query failed for provider "grok" {"service":"ai-orchestra","error":"{\\"provider\\":\\"grok\\",\\"message\\":\\"Request failed with status code 403\\",\\"code\\":\\"ERR_BAD_REQUEST\\",\\"timestamp\\":\\"2025-11-13T14:28:42.416Z\\",\\"status\\":403,\\"statusText\\":\\"Forbidden\\",\\"data\\":\\"Access denied\\"}"}
+# 2025-11-13 14:28:42 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+        # Subtest: should reject query with null prompt
+        ok 2 - should reject query with null prompt
+          ---
+          duration_ms: 3020.822252
+          type: 'test'
+          ...
+# [grok] Request failed (attempt 1/3), retrying in 1000ms...
+# [grok] Request failed (attempt 2/3), retrying in 2000ms...
+# 2025-11-13 14:28:45 [[31merror[39m]: [LLMBridge] Query failed for provider "grok" {"service":"ai-orchestra","error":"{\\"provider\\":\\"grok\\",\\"message\\":\\"Request failed with status code 403\\",\\"code\\":\\"ERR_BAD_REQUEST\\",\\"timestamp\\":\\"2025-11-13T14:28:45.435Z\\",\\"status\\":403,\\"statusText\\":\\"Forbidden\\",\\"data\\":\\"Access denied\\"}"}
+# 2025-11-13 14:28:45 [[32minfo[39m]: [LLMBridge] Grok connector initialized {"service":"ai-orchestra"}
+# 2025-11-13 14:28:45 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:45 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+# 2025-11-13 14:28:45 [[33mwarn[39m]: [LLMBridge] No connectors initialized. Check your configuration. {"service":"ai-orchestra"}
+        # Subtest: should reject query with undefined prompt
+        ok 3 - should reject query with undefined prompt
+          ---
+          duration_ms: 3018.883678
+          type: 'test'
+          ...
+        # Subtest: should reject query with invalid provider
+        ok 4 - should reject query with invalid provider
+          ---
+          duration_ms: 1.905508
+          type: 'test'
+          ...
+        1..4
+    ok 8 - Query Edge Cases
+      ---
+      duration_ms: 9072.251424
+      type: 'suite'
+      ...
+    # Subtest: Initialization Edge Cases
+        # Subtest: should handle null config
+        not ok 1 - should handle null config
+          ---
+          duration_ms: 0.351399
+          type: 'test'
+          location: '/home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:651:5'
+          failureType: 'testCodeFailure'
+          error: |-
+            Got unwanted exception.
+            Actual message: "Cannot read properties of null (reading 'defaultProvider')"
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          actual:
+          error: "Cannot read properties of null (reading 'defaultProvider')"
+          name: 'TypeError'
+          stack: |-
+            new LLMBridge (file:///home/user/AI-Orchestra/core/llm_bridge.js:15:35)
+            file:///home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:653:24
+            getActual (node:assert:609:5)
+            Function.doesNotThrow (node:assert:777:32)
+            TestContext.<anonymous> (file:///home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:652:14)
+            Test.runInAsyncScope (node:async_hooks:214:14)
+            Test.run (node:internal/test_runner/test:1047:25)
+            Test.start (node:internal/test_runner/test:944:17)
+            node:internal/test_runner/test:1440:71
+            node:internal/per_context/primordials:464:82
+          operator: 'doesNotThrow'
+          stack: |-
+            TestContext.<anonymous> (file:///home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:652:14)
+            Test.runInAsyncScope (node:async_hooks:214:14)
+            Test.run (node:internal/test_runner/test:1047:25)
+            Test.start (node:internal/test_runner/test:944:17)
+            node:internal/test_runner/test:1440:71
+            node:internal/per_context/primordials:464:82
+            new Promise (<anonymous>)
+            new SafePromise (node:internal/per_context/primordials:433:3)
+            node:internal/per_context/primordials:464:9
+            Array.map (<anonymous>)
+          ...
+        # Subtest: should handle undefined config
+        ok 2 - should handle undefined config
+          ---
+          duration_ms: 0.432029
+          type: 'test'
+          ...
+        # Subtest: should handle config without providers key
+        ok 3 - should handle config without providers key
+          ---
+          duration_ms: 0.325538
+          type: 'test'
+          ...
+        # Subtest: should set default values when config is empty
+        not ok 4 - should set default values when config is empty
+          ---
+          duration_ms: 0.772058
+          type: 'test'
+          location: '/home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:672:5'
+          failureType: 'testCodeFailure'
+          error: |-
+            The expression evaluated to a falsy value:
+            
+              assert.ok(typeof bridge.enableFallback === 'boolean')
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: true
+          actual: false
+          operator: '=='
+          stack: |-
+            TestContext.<anonymous> (file:///home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:676:14)
+            Test.runInAsyncScope (node:async_hooks:214:14)
+            Test.run (node:internal/test_runner/test:1047:25)
+            Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+            Test.postRun (node:internal/test_runner/test:1173:19)
+            Test.run (node:internal/test_runner/test:1101:12)
+            process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        1..4
+    not ok 9 - Initialization Edge Cases
+      ---
+      duration_ms: 2.097184
+      type: 'suite'
+      location: '/home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:650:3'
+      failureType: 'subtestsFailed'
+      error: '2 subtests failed'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    1..9
+not ok 5 - LLM Bridge Advanced Tests
+  ---
+  duration_ms: 9228.734964
+  type: 'suite'
+  location: '/home/user/AI-Orchestra/tests/unit/llm_bridge_advanced.test.js:20:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Server - Critical Functionality
+    # Subtest: Health Check Endpoints
+        # Subtest: should return health status with all service states
+        ok 1 - should return health status with all service states
+          ---
+          duration_ms: 1.078028
+          type: 'test'
+          ...
+        # Subtest: should return ok status when all services are healthy
+        ok 2 - should return ok status when all services are healthy
+          ---
+          duration_ms: 0.19058
+          type: 'test'
+          ...
+        # Subtest: should return degraded status when any service fails
+        ok 3 - should return degraded status when any service fails
+          ---
+          duration_ms: 0.107871
+          type: 'test'
+          ...
+        # Subtest: should handle disabled services correctly
+        ok 4 - should handle disabled services correctly
+          ---
+          duration_ms: 0.088713
+          type: 'test'
+          ...
+        # Subtest: should include version and environment information
+        ok 5 - should include version and environment information
+          ---
+          duration_ms: 0.098414
+          type: 'test'
+          ...
+        1..5
+    ok 1 - Health Check Endpoints
+      ---
+      duration_ms: 2.725476
+      type: 'suite'
+      ...
+    # Subtest: API Input Validation (P0)
+        # Subtest: Valid Requests
+            # Subtest: should accept valid basic query
+            ok 1 - should accept valid basic query
+              ---
+              duration_ms: 0.222303
+              type: 'test'
+              ...
+            # Subtest: should accept query with provider and model
+            ok 2 - should accept query with provider and model
+              ---
+              duration_ms: 0.157774
+              type: 'test'
+              ...
+            # Subtest: should accept query with temperature and maxTokens
+            ok 3 - should accept query with temperature and maxTokens
+              ---
+              duration_ms: 0.290015
+              type: 'test'
+              ...
+            # Subtest: should accept query with all options
+            ok 4 - should accept query with all options
+              ---
+              duration_ms: 0.187398
+              type: 'test'
+              ...
+            1..4
+        ok 1 - Valid Requests
+          ---
+          duration_ms: 1.117262
+          type: 'suite'
+          ...
+        # Subtest: Invalid Requests - Missing/Empty Prompt
+            # Subtest: should reject request without prompt
+            ok 1 - should reject request without prompt
+              ---
+              duration_ms: 0.230703
+              type: 'test'
+              ...
+            # Subtest: should reject request with empty prompt
+            ok 2 - should reject request with empty prompt
+              ---
+              duration_ms: 0.14864
+              type: 'test'
+              ...
+            # Subtest: should reject request with null prompt
+            ok 3 - should reject request with null prompt
+              ---
+              duration_ms: 0.152433
+              type: 'test'
+              ...
+            # Subtest: should reject request with undefined prompt
+            ok 4 - should reject request with undefined prompt
+              ---
+              duration_ms: 0.161599
+              type: 'test'
+              ...
+            1..4
+        ok 2 - Invalid Requests - Missing/Empty Prompt
+          ---
+          duration_ms: 0.94733
+          type: 'suite'
+          ...
+        # Subtest: Invalid Requests - Temperature Validation
+            # Subtest: should reject temperature > 2.0
+            ok 1 - should reject temperature > 2.0
+              ---
+              duration_ms: 0.135617
+              type: 'test'
+              ...
+            # Subtest: should reject negative temperature
+            ok 2 - should reject negative temperature
+              ---
+              duration_ms: 0.085629
+              type: 'test'
+              ...
+            1..2
+        ok 3 - Invalid Requests - Temperature Validation
+          ---
+          duration_ms: 0.324585
+          type: 'suite'
+          ...
+        # Subtest: Invalid Requests - MaxTokens Validation
+            # Subtest: should reject negative maxTokens
+            ok 1 - should reject negative maxTokens
+              ---
+              duration_ms: 0.124687
+              type: 'test'
+              ...
+            # Subtest: should reject non-numeric maxTokens
+            ok 2 - should reject non-numeric maxTokens
+              ---
+              duration_ms: 0.094755
+              type: 'test'
+              ...
+            1..2
+        ok 4 - Invalid Requests - MaxTokens Validation
+          ---
+          duration_ms: 0.319375
+          type: 'suite'
+          ...
+        # Subtest: Security - Injection Attempts
+            # Subtest: should handle SQL injection attempts safely
+            ok 1 - should handle SQL injection attempts safely
+              ---
+              duration_ms: 0.151427
+              type: 'test'
+              ...
+            # Subtest: should handle XSS attempts safely
+            ok 2 - should handle XSS attempts safely
+              ---
+              duration_ms: 0.129719
+              type: 'test'
+              ...
+            1..2
+        ok 5 - Security - Injection Attempts
+          ---
+          duration_ms: 0.409865
+          type: 'suite'
+          ...
+        # Subtest: Edge Cases
+            # Subtest: should accept minimum valid prompt
+            ok 1 - should accept minimum valid prompt
+              ---
+              duration_ms: 0.281792
+              type: 'test'
+              ...
+            # Subtest: should handle long prompts appropriately
+            ok 2 - should handle long prompts appropriately
+              ---
+              duration_ms: 2.335778
+              type: 'test'
+              ...
+            # Subtest: should handle zero temperature
+            ok 3 - should handle zero temperature
+              ---
+              duration_ms: 0.172922
+              type: 'test'
+              ...
+            # Subtest: should handle max temperature
+            ok 4 - should handle max temperature
+              ---
+              duration_ms: 0.113693
+              type: 'test'
+              ...
+            # Subtest: should handle unicode characters
+            ok 5 - should handle unicode characters
+              ---
+              duration_ms: 0.132394
+              type: 'test'
+              ...
+            # Subtest: should handle special characters
+            ok 6 - should handle special characters
+              ---
+              duration_ms: 0.098056
+              type: 'test'
+              ...
+            # Subtest: should handle multiline prompts
+            ok 7 - should handle multiline prompts
+              ---
+              duration_ms: 0.171139
+              type: 'test'
+              ...
+            1..7
+        ok 6 - Edge Cases
+          ---
+          duration_ms: 3.689902
+          type: 'suite'
+          ...
+        1..6
+    ok 2 - API Input Validation (P0)
+      ---
+      duration_ms: 7.27423
+      type: 'suite'
+      ...
+    # Subtest: Error Handling Middleware (P0)
+        # Subtest: should handle provider errors gracefully
+        ok 1 - should handle provider errors gracefully
+          ---
+          duration_ms: 0.207709
+          type: 'test'
+          ...
+        # Subtest: should handle rate limit errors
+        ok 2 - should handle rate limit errors
+          ---
+          duration_ms: 0.099278
+          type: 'test'
+          ...
+        # Subtest: should handle timeout errors
+        ok 3 - should handle timeout errors
+          ---
+          duration_ms: 0.096473
+          type: 'test'
+          ...
+        # Subtest: should handle generic server errors
+        ok 4 - should handle generic server errors
+          ---
+          duration_ms: 0.114581
+          type: 'test'
+          ...
+        # Subtest: should handle validation errors
+        ok 5 - should handle validation errors
+          ---
+          duration_ms: 0.089852
+          type: 'test'
+          ...
+        # Subtest: should not expose sensitive information in errors
+        ok 6 - should not expose sensitive information in errors
+          ---
+          duration_ms: 0.139554
+          type: 'test'
+          ...
+        # Subtest: should log errors properly for debugging
+        ok 7 - should log errors properly for debugging
+          ---
+          duration_ms: 0.120959
+          type: 'test'
+          ...
+        1..7
+    ok 3 - Error Handling Middleware (P0)
+      ---
+      duration_ms: 1.139515
+      type: 'suite'
+      ...
+    # Subtest: Rate Limiting (Bug \#3 Fix - HIGH Priority)
+        # Subtest: should enable rate limiting when configured
+        ok 1 - should enable rate limiting when configured
+          ---
+          duration_ms: 0.214947
+          type: 'test'
+          ...
+        # Subtest: should use correct configuration property name
+        ok 2 - should use correct configuration property name
+          ---
+          duration_ms: 0.104864
+          type: 'test'
+          ...
+        # Subtest: should have default rate limit values
+        ok 3 - should have default rate limit values
+          ---
+          duration_ms: 0.448319
+          type: 'test'
+          ...
+        # Subtest: should return proper error message when rate limited
+        ok 4 - should return proper error message when rate limited
+          ---
+          duration_ms: 0.128307
+          type: 'test'
+          ...
+        1..4
+    ok 4 - Rate Limiting (Bug \#3 Fix - HIGH Priority)
+      ---
+      duration_ms: 1.126958
+      type: 'suite'
+      ...
+    # Subtest: 404 Handler
+        # Subtest: should return 404 for unknown routes
+        ok 1 - should return 404 for unknown routes
+          ---
+          duration_ms: 0.127941
+          type: 'test'
+          ...
+        # Subtest: should return JSON error format
+        ok 2 - should return JSON error format
+          ---
+          duration_ms: 0.111019
+          type: 'test'
+          ...
+        1..2
+    ok 5 - 404 Handler
+      ---
+      duration_ms: 0.35426
+      type: 'suite'
+      ...
+    # Subtest: Graceful Shutdown
+        # Subtest: should handle SIGTERM gracefully
+        ok 1 - should handle SIGTERM gracefully
+          ---
+          duration_ms: 0.461332
+          type: 'test'
+          ...
+        # Subtest: should handle SIGINT gracefully
+        ok 2 - should handle SIGINT gracefully
+          ---
+          duration_ms: 0.112476
+          type: 'test'
+          ...
+        # Subtest: should handle uncaught exceptions
+        ok 3 - should handle uncaught exceptions
+          ---
+          duration_ms: 0.140037
+          type: 'test'
+          ...
+        # Subtest: should handle unhandled promise rejections
+        ok 4 - should handle unhandled promise rejections
+          ---
+          duration_ms: 0.147878
+          type: 'test'
+          ...
+        1..4
+    ok 6 - Graceful Shutdown
+      ---
+      duration_ms: 1.075516
+      type: 'suite'
+      ...
+    # Subtest: Metrics Endpoint
+        # Subtest: should expose Prometheus metrics
+        ok 1 - should expose Prometheus metrics
+          ---
+          duration_ms: 0.195156
+          type: 'test'
+          ...
+        # Subtest: should track HTTP request metrics
+        ok 2 - should track HTTP request metrics
+          ---
+          duration_ms: 0.132482
+          type: 'test'
+          ...
+        # Subtest: should track LLM query metrics
+        ok 3 - should track LLM query metrics
+          ---
+          duration_ms: 0.151884
+          type: 'test'
+          ...
+        # Subtest: should track WebSocket connections
+        ok 4 - should track WebSocket connections
+          ---
+          duration_ms: 0.126082
+          type: 'test'
+          ...
+        1..4
+    ok 7 - Metrics Endpoint
+      ---
+      duration_ms: 0.797158
+      type: 'suite'
+      ...
+    # Subtest: Middleware Stack
+        # Subtest: should apply helmet security headers when enabled
+        ok 1 - should apply helmet security headers when enabled
+          ---
+          duration_ms: 0.264419
+          type: 'test'
+          ...
+        # Subtest: should apply CORS when enabled
+        ok 2 - should apply CORS when enabled
+          ---
+          duration_ms: 0.185104
+          type: 'test'
+          ...
+        # Subtest: should parse JSON request bodies
+        ok 3 - should parse JSON request bodies
+          ---
+          duration_ms: 0.150528
+          type: 'test'
+          ...
+        # Subtest: should parse URL-encoded bodies
+        ok 4 - should parse URL-encoded bodies
+          ---
+          duration_ms: 0.094668
+          type: 'test'
+          ...
+        # Subtest: should log all HTTP requests
+        ok 5 - should log all HTTP requests
+          ---
+          duration_ms: 0.095906
+          type: 'test'
+          ...
+        1..5
+    ok 8 - Middleware Stack
+      ---
+      duration_ms: 1.033726
+      type: 'suite'
+      ...
+    1..8
+ok 6 - Server - Critical Functionality
+  ---
+  duration_ms: 18.287882
+  type: 'suite'
+  ...
+# Subtest: Server - API Endpoints
+    # Subtest: POST /api/query
+        # Subtest: should return 400 when prompt is missing
+        ok 1 - should return 400 when prompt is missing
+          ---
+          duration_ms: 0.212254
+          type: 'test'
+          ...
+        # Subtest: should successfully process valid query
+        ok 2 - should successfully process valid query
+          ---
+          duration_ms: 0.124332
+          type: 'test'
+          ...
+        # Subtest: should record LLM query metrics
+        ok 3 - should record LLM query metrics
+          ---
+          duration_ms: 0.106164
+          type: 'test'
+          ...
+        # Subtest: should log query details
+        ok 4 - should log query details
+          ---
+          duration_ms: 0.08819
+          type: 'test'
+          ...
+        # Subtest: should handle errors with proper status codes
+        ok 5 - should handle errors with proper status codes
+          ---
+          duration_ms: 0.14079
+          type: 'test'
+          ...
+        1..5
+    ok 1 - POST /api/query
+      ---
+      duration_ms: 0.933937
+      type: 'suite'
+      ...
+    # Subtest: POST /api/stream
+        # Subtest: should return 400 when prompt is missing
+        ok 1 - should return 400 when prompt is missing
+          ---
+          duration_ms: 0.153141
+          type: 'test'
+          ...
+        # Subtest: should set proper headers for streaming
+        ok 2 - should set proper headers for streaming
+          ---
+          duration_ms: 0.132592
+          type: 'test'
+          ...
+        # Subtest: should stream chunks in SSE format
+        ok 3 - should stream chunks in SSE format
+          ---
+          duration_ms: 0.11478
+          type: 'test'
+          ...
+        # Subtest: should send [DONE] at end of stream
+        ok 4 - should send [DONE] at end of stream
+          ---
+          duration_ms: 0.109734
+          type: 'test'
+          ...
+        1..4
+    ok 2 - POST /api/stream
+      ---
+      duration_ms: 0.67504
+      type: 'suite'
+      ...
+    # Subtest: GET /api/status
+        # Subtest: should return application status
+        ok 1 - should return application status
+          ---
+          duration_ms: 0.158514
+          type: 'test'
+          ...
+        # Subtest: should return LLM stats
+        ok 2 - should return LLM stats
+          ---
+          duration_ms: 0.243098
+          type: 'test'
+          ...
+        # Subtest: should return GitHub status
+        ok 3 - should return GitHub status
+          ---
+          duration_ms: 0.1045
+          type: 'test'
+          ...
+        1..3
+    ok 3 - GET /api/status
+      ---
+      duration_ms: 0.667764
+      type: 'suite'
+      ...
+    # Subtest: GET /api/providers
+        # Subtest: should return list of available providers
+        ok 1 - should return list of available providers
+          ---
+          duration_ms: 0.172018
+          type: 'test'
+          ...
+        1..1
+    ok 4 - GET /api/providers
+      ---
+      duration_ms: 0.282128
+      type: 'suite'
+      ...
+    # Subtest: GET /api/models
+        # Subtest: should return available models
+        ok 1 - should return available models
+          ---
+          duration_ms: 0.186593
+          type: 'test'
+          ...
+        # Subtest: should handle errors gracefully
+        ok 2 - should handle errors gracefully
+          ---
+          duration_ms: 0.413763
+          type: 'test'
+          ...
+        1..2
+    ok 5 - GET /api/models
+      ---
+      duration_ms: 0.777683
+      type: 'suite'
+      ...
+    1..5
+ok 7 - Server - API Endpoints
+  ---
+  duration_ms: 3.703766
+  type: 'suite'
+  ...
+1..7
+# tests 272
+# suites 60
+# pass 265
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10122.610359
+----------------------|---------|----------|---------|---------|------------------------------------
+File                  | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                  
+----------------------|---------|----------|---------|---------|------------------------------------
+All files             |   61.36 |    58.28 |   60.34 |   61.36 |                                    
+ core                 |   83.11 |    59.84 |   84.37 |   83.11 |                                    
+  base_connector.js   |     100 |    96.42 |     100 |     100 | 13                                 
+  config_manager.js   |   78.17 |    24.56 |   72.72 |   78.17 | ...304-305,308-309,312-313,325-338 
+  llm_bridge.js       |    78.4 |    81.81 |   81.81 |    78.4 | ...107-125,134-155,223-227,244-246 
+  logger.js           |     100 |    66.66 |     100 |     100 | 23                                 
+ core/connectors      |      40 |    51.61 |   30.76 |      40 |                                    
+  grok_connector.js   |   57.37 |       50 |   57.14 |   57.37 | ...162-176,186,195,210-214,238-250 
+  ollama_connector.js |   32.38 |       50 |   27.27 |   32.38 | ...251-260,268-277,286-298,307-317 
+  openai_connector.js |   31.22 |    66.66 |    12.5 |   31.22 | ...142-149,156-170,179-190,198-220 
+----------------------|---------|----------|---------|---------|------------------------------------
