@@ -28,6 +28,44 @@
           }
         ]
       },
+      "claude": {
+        "enabled": false,
+        "priority": 1,
+        "models": [
+          {
+            "id": "claude-3-5-sonnet-20241022",
+            "name": "Claude 3.5 Sonnet",
+            "contextWindow": 200000,
+            "maxOutputTokens": 8192,
+            "costPer1kInput": 0.003,
+            "costPer1kOutput": 0.015
+          },
+          {
+            "id": "claude-3-5-haiku-20241022",
+            "name": "Claude 3.5 Haiku",
+            "contextWindow": 200000,
+            "maxOutputTokens": 8192,
+            "costPer1kInput": 0.001,
+            "costPer1kOutput": 0.005
+          },
+          {
+            "id": "claude-3-opus-20240229",
+            "name": "Claude 3 Opus",
+            "contextWindow": 200000,
+            "maxOutputTokens": 4096,
+            "costPer1kInput": 0.015,
+            "costPer1kOutput": 0.075
+          },
+          {
+            "id": "claude-3-sonnet-20240229",
+            "name": "Claude 3 Sonnet",
+            "contextWindow": 200000,
+            "maxOutputTokens": 4096,
+            "costPer1kInput": 0.003,
+            "costPer1kOutput": 0.015
+          }
+        ]
+      },
       "grok": {
         "enabled": false,
         "priority": 2,

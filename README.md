@@ -2,7 +2,7 @@
 
 **Autonomous Multi-LLM Development System with Distributed Agent Orchestration**
 
-AI Orchestra is a powerful framework that combines multiple LLM providers (OpenAI, Grok, Ollama) with distributed agent orchestration to create an autonomous development system.
+AI Orchestra is a powerful framework that combines multiple LLM providers (OpenAI, Anthropic Claude, Grok, Ollama) with distributed agent orchestration to create an autonomous development system.
 
 ## 🚀 Phase 9 Complete - Visual Orchestration
 
@@ -32,7 +32,7 @@ AI Orchestra is a powerful framework that combines multiple LLM providers (OpenA
 ## 🎯 Features
 
 ### Core Features
-- **Multi-LLM Support**: Seamlessly integrate OpenAI, Grok (xAI), and Ollama
+- **Multi-LLM Support**: Seamlessly integrate OpenAI, Anthropic Claude, Grok (xAI), and Ollama
 - **Intelligent Load Balancing**: Round-robin, random, or default provider selection
 - **Automatic Fallback**: Graceful degradation when providers fail
 - **FusionForge Dashboard**: Beautiful Next.js web interface with real-time monitoring
@@ -58,14 +58,31 @@ AI Orchestra is a powerful framework that combines multiple LLM providers (OpenA
 
 - **Docker** 20.10+ and **Docker Compose** 2.0+ (recommended)
 - **Node.js** 18+ and **npm** 9+ (for local development)
+- **Git** 2.5+ (for Phase 9 worktree support)
 - At least one LLM provider:
-  - OpenAI API key
+  - OpenAI API key (GPT-4, GPT-3.5)
+  - **Anthropic Claude API key** (Claude 3.5 Sonnet, Haiku) - NEW!
   - Grok (xAI) API key
   - Ollama (runs locally in Docker)
 
 ## 🚀 Quick Start
 
-### Option 1: Docker Compose (Recommended)
+### Option 1: Automated Setup (Fastest)
+
+```bash
+# Clone the repository
+git clone https://github.com/mikeychann-hash/AI-Orchestra.git
+cd AI-Orchestra
+
+# Run the quick start script
+./scripts/quickstart.sh
+
+# Follow the prompts and add your API key to .env
+# Then start the server:
+npm start
+```
+
+### Option 2: Docker Compose (Recommended)
 
 ```bash
 # Clone the repository

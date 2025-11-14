@@ -4,6 +4,7 @@
  */
 
 import { OpenAIConnector } from './connectors/openai_connector.js';
+import { ClaudeConnector } from './connectors/claude_connector.js';
 import { GrokConnector } from './connectors/grok_connector.js';
 import { OllamaConnector } from './connectors/ollama_connector.js';
 import logger from './logger.js';
@@ -32,6 +33,16 @@ export class LLMBridge {
         logger.info('[LLMBridge] OpenAI connector initialized');
       } catch (error) {
         logger.error('[LLMBridge] Failed to initialize OpenAI connector', { error: error.message });
+      }
+    }
+
+    // Initialize Claude connector
+    if (providers && providers.claude?.enabled) {
+      try {
+        this.connectors.set('claude', new ClaudeConnector(providers.claude));
+        logger.info('[LLMBridge] Claude connector initialized');
+      } catch (error) {
+        logger.error('[LLMBridge] Failed to initialize Claude connector', { error: error.message });
       }
     }
 
