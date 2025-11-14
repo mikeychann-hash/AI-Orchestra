@@ -245,6 +245,143 @@ export class ApiClient {
       reader.releaseLock();
     }
   }
+
+  // ============================================
+  // Phase 9: Worktree Management APIs
+  // ============================================
+
+  /**
+   * Get all worktrees
+   */
+  async getWorktrees() {
+    return this.get<any[]>('/api/worktrees');
+  }
+
+  /**
+   * Get a specific worktree by ID
+   */
+  async getWorktree(id: string) {
+    return this.get<any>(`/api/worktrees/${id}`);
+  }
+
+  /**
+   * Create a new worktree
+   */
+  async createWorktree(data: {
+    branchName: string;
+    issueUrl?: string;
+    taskId?: string;
+  }) {
+    return this.post<any>('/api/worktrees', data);
+  }
+
+  /**
+   * Update a worktree
+   */
+  async updateWorktree(id: string, updates: any) {
+    return this.put<any>(`/api/worktrees/${id}`, updates);
+  }
+
+  /**
+   * Delete a worktree
+   */
+  async deleteWorktree(id: string) {
+    return this.delete<any>(`/api/worktrees/${id}`);
+  }
+
+  /**
+   * Update node position on canvas
+   */
+  async updateNodePosition(nodeId: string, position: { x: number; y: number }) {
+    return this.put<any>(`/api/nodes/${nodeId}/position`, { position });
+  }
+
+  // ============================================
+  // Phase 9: Zone Management APIs
+  // ============================================
+
+  /**
+   * Get all zones
+   */
+  async getZones() {
+    return this.get<any[]>('/api/zones');
+  }
+
+  /**
+   * Get a specific zone by ID
+   */
+  async getZone(id: string) {
+    return this.get<any>(`/api/zones/${id}`);
+  }
+
+  /**
+   * Create a new zone
+   */
+  async createZone(data: {
+    name: string;
+    description?: string;
+    trigger?: string;
+    agents?: string[];
+    promptTemplate?: string;
+    actions?: any[];
+    position?: { x: number; y: number };
+    size?: { width: number; height: number };
+  }) {
+    return this.post<any>('/api/zones', data);
+  }
+
+  /**
+   * Update a zone
+   */
+  async updateZone(id: string, updates: any) {
+    return this.put<any>(`/api/zones/${id}`, updates);
+  }
+
+  /**
+   * Delete a zone
+   */
+  async deleteZone(id: string) {
+    return this.delete<any>(`/api/zones/${id}`);
+  }
+
+  /**
+   * Assign a worktree to a zone
+   */
+  async assignWorktreeToZone(worktreeId: string, zoneId: string, worktreeData?: any) {
+    return this.post<any>(`/api/zones/${zoneId}/assign/${worktreeId}`, { worktree: worktreeData });
+  }
+
+  // ============================================
+  // Phase 9: GitHub Integration APIs
+  // ============================================
+
+  /**
+   * Search GitHub issues
+   */
+  async searchGitHubIssues(query: string, owner?: string, repo?: string) {
+    const params = new URLSearchParams({ query });
+    if (owner) params.append('owner', owner);
+    if (repo) params.append('repo', repo);
+    return this.get<any[]>(`/api/github/issues/search?${params}`);
+  }
+
+  /**
+   * Get GitHub issue details
+   */
+  async getGitHubIssue(owner: string, repo: string, issueNumber: number) {
+    return this.get<any>(`/api/github/issues/${owner}/${repo}/${issueNumber}`);
+  }
+
+  // ============================================
+  // Phase 9: Feature Flags
+  // ============================================
+
+  /**
+   * Get feature flag status
+   */
+  async getFeatureFlag(flagName: string) {
+    return this.get<{ enabled: boolean }>(`/api/features/${flagName}`);
+  }
 }
 
 export const api = new ApiClient();

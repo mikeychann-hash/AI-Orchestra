@@ -33,6 +33,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.68.0",
     "@octokit/rest": "^20.0.2",
     "axios": "^1.6.7",
     "better-sqlite3": "^9.4.0",

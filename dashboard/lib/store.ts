@@ -47,6 +47,19 @@ interface DashboardStore {
   setSidebarOpen: (open: boolean) => void;
   theme: 'light' | 'dark';
   setTheme: (theme: 'light' | 'dark') => void;
+
+  // Phase 9: Workflow Canvas
+  worktrees: any[];
+  setWorktrees: (worktrees: any[]) => void;
+  addWorktree: (worktree: any) => void;
+  updateWorktree: (id: string, updates: Partial<any>) => void;
+  removeWorktree: (id: string) => void;
+
+  zones: any[];
+  setZones: (zones: any[]) => void;
+  addZone: (zone: any) => void;
+  updateZone: (id: string, updates: Partial<any>) => void;
+  removeZone: (id: string) => void;
 }
 
 export const useDashboardStore = create<DashboardStore>((set, get) => ({
@@ -147,4 +160,39 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
   theme: 'dark',
   setTheme: (theme) => set({ theme }),
+
+  // Phase 9: Workflow Canvas
+  worktrees: [],
+  setWorktrees: (worktrees) => set({ worktrees }),
+  addWorktree: (worktree) =>
+    set((state) => ({
+      worktrees: [...state.worktrees, worktree],
+    })),
+  updateWorktree: (id, updates) =>
+    set((state) => ({
+      worktrees: state.worktrees.map((wt) =>
+        wt.id === id ? { ...wt, ...updates } : wt
+      ),
+    })),
+  removeWorktree: (id) =>
+    set((state) => ({
+      worktrees: state.worktrees.filter((wt) => wt.id !== id),
+    })),
+
+  zones: [],
+  setZones: (zones) => set({ zones }),
+  addZone: (zone) =>
+    set((state) => ({
+      zones: [...state.zones, zone],
+    })),
+  updateZone: (id, updates) =>
+    set((state) => ({
+      zones: state.zones.map((zone) =>
+        zone.id === id ? { ...zone, ...updates } : zone
+      ),
+    })),
+  removeZone: (id) =>
+    set((state) => ({
+      zones: state.zones.filter((zone) => zone.id !== id),
+    })),
 }));
