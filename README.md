@@ -4,9 +4,20 @@
 
 AI Orchestra is a powerful framework that combines multiple LLM providers (OpenAI, Grok, Ollama) with distributed agent orchestration to create an autonomous development system.
 
-## 🚀 Phase 8 Complete - Production Launch & CI/CD
+## 🚀 Phase 9 Complete - Visual Orchestration
 
-This release includes all previous phases plus production deployment:
+**NEW**: Transform your workflow with visual canvas orchestration!
+
+- ✅ **Phase 9**: Interactive 2D visual canvas with ReactFlow
+- ✅ **Phase 9**: Git worktree management with automatic port allocation
+- ✅ **Phase 9**: Drag-and-drop workflow automation
+- ✅ **Phase 9**: GitHub issue/PR integration with context injection
+- ✅ **Phase 9**: Zone-based AI agent orchestration
+- ✅ **Phase 9**: Real-time WebSocket updates
+- ✅ **Phase 9**: SQLite persistence layer for visual workflows
+- ✅ **Phase 9**: Multi-agent parallel execution with LLM bridge
+
+**Previous Phases:**
 - ✅ **Phase 6**: Multi-provider LLM connectors (OpenAI, Grok, Ollama)
 - ✅ **Phase 6**: Unified LLM bridge with load balancing and fallback
 - ✅ **Phase 6**: GitHub integration utilities & Docker deployment
@@ -20,6 +31,7 @@ This release includes all previous phases plus production deployment:
 
 ## 🎯 Features
 
+### Core Features
 - **Multi-LLM Support**: Seamlessly integrate OpenAI, Grok (xAI), and Ollama
 - **Intelligent Load Balancing**: Round-robin, random, or default provider selection
 - **Automatic Fallback**: Graceful degradation when providers fail
@@ -30,6 +42,17 @@ This release includes all previous phases plus production deployment:
 - **Docker Deployment**: One-command deployment with Docker Compose
 - **GitHub Integration**: Built-in utilities for GitHub API interactions
 - **Flexible Configuration**: Environment variables and JSON-based settings
+
+### Phase 9: Visual Orchestration (NEW)
+- **Visual Canvas**: Interactive 2D workspace for managing workflows
+- **Worktree Management**: Create isolated Git environments with unique ports
+- **Drag-and-Drop**: Intuitive workflow automation via drag-and-drop
+- **Smart Zones**: Define workflow stages that trigger AI agents automatically
+- **GitHub Context**: Link issues/PRs and inject context into agent prompts
+- **Real-Time Updates**: WebSocket-powered live status and execution results
+- **Multi-Agent Execution**: Run multiple AI agents in parallel per zone
+- **Execution History**: Track and review all agent executions
+- **Template System**: Dynamic prompt templates with GitHub and worktree variables
 
 ## 📋 Prerequisites
 
@@ -92,6 +115,73 @@ npm start
 # Or for development with hot reload
 npm run dev
 ```
+
+---
+
+## 🎨 Phase 9: Visual Canvas Quick Start
+
+### Enable Visual Orchestration
+
+**1. Run Database Migration:**
+```bash
+node scripts/migrate_to_phase9.js
+```
+
+This creates:
+- Visual database with schema
+- 4 default zones (Development, Testing, Review, Deployment)
+- Backup of existing data
+
+**2. Enable Feature Flag:**
+
+In `.env`:
+```bash
+FEATURE_VISUAL_CANVAS=true
+WORKTREE_BASE_PATH=.worktrees
+WORKTREE_PORT_MIN=3001
+WORKTREE_PORT_MAX=3999
+```
+
+**3. Restart Server:**
+```bash
+docker-compose restart
+# Or: npm start
+```
+
+**4. Access Visual Canvas:**
+```
+http://localhost:3001/canvas
+```
+
+### Your First Visual Workflow
+
+**1. Create a Worktree:**
+- Click "Create Worktree" in the toolbar
+- Enter branch name: `feature/my-first-feature`
+- (Optional) Link a GitHub issue
+- Click "Create"
+
+**2. Drag to Development Zone:**
+- The worktree card appears on the canvas
+- Drag it into the "Development" zone
+- Watch as AI agents automatically implement your feature!
+
+**3. Move Through Workflow:**
+- Drag to "Testing" zone → Agents write tests
+- Drag to "Code Review" zone → Agents review and create PR
+- Drag to "Deployment" zone → Agents prepare deployment
+
+**4. View Results:**
+- Real-time execution status on cards
+- Click zone to view execution history
+- Review agent outputs and token usage
+
+### Learn More
+
+- [User Guide](docs/PHASE_9_USER_GUIDE.md) - Complete visual canvas guide
+- [Migration Guide](docs/PHASE_9_MIGRATION_GUIDE.md) - Upgrade from Phase 8
+- [Developer Guide](docs/PHASE_9_DEVELOPER_GUIDE.md) - Architecture and API
+- [API Reference](docs/PHASE_9_API_REFERENCE.md) - REST and WebSocket API
 
 ## 📝 Configuration
 
@@ -329,6 +419,13 @@ docker-compose ps
 ```
 
 ## 📚 Documentation
+
+### Phase 9: Visual Orchestration (NEW)
+- [User Guide](docs/PHASE_9_USER_GUIDE.md) - Complete guide to visual canvas
+- [Migration Guide](docs/PHASE_9_MIGRATION_GUIDE.md) - Upgrade from Phase 8
+- [Developer Guide](docs/PHASE_9_DEVELOPER_GUIDE.md) - Architecture and integration
+- [API Reference](docs/PHASE_9_API_REFERENCE.md) - REST API and WebSocket events
+- [Documentation Index](docs/PHASE_9_DOCUMENTATION_INDEX.md) - All Phase 9 docs
 
 ### User Guides
 - [Getting Started](GETTING_STARTED.md) - Quick start guide for new users

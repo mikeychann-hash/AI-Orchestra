@@ -18,6 +18,7 @@ import { GitHubIntegration } from './core/integrations/github_integration.js';
 import { createLogger, format, transports } from 'winston';
 import { getCsrfToken, csrfProtection, validateOrigin } from './middleware/csrf.js';
 import { cookieParser, enableCookieResponse } from './middleware/cookieParser.js';
+import { createPhase9Routes } from './core/api/phase9_routes.js';
 
 // Initialize configuration
 const configManager = new ConfigManager();
@@ -586,6 +587,30 @@ if (config.websocket?.enabled) {
   });
 
   logger.info(`WebSocket server listening on port ${config.websocket.port}`);
+}
+
+// Phase 9: Visual Orchestration Routes
+const phase9Routes = createPhase9Routes({
+  repoPath: process.cwd(),
+  worktreeBasePath: process.env.WORKTREE_BASE_PATH || '.worktrees',
+  portRange: {
+    min: parseInt(process.env.WORKTREE_PORT_MIN) || 3001,
+    max: parseInt(process.env.WORKTREE_PORT_MAX) || 3999
+  },
+  github: config.github,
+  llmBridge: llmBridge,
+  database: {
+    dbPath: process.env.VISUAL_DB_PATH
+  }
+});
+
+// Mount Phase 9 routes (before 404 handler)
+app.use('/api', csrfProtection, phase9Routes);
+
+// Attach WebSocket to Phase 9 routes (if WebSocket is enabled)
+if (wss) {
+  phase9Routes.attachWebSocket(wss);
+  logger.info('[Phase9] WebSocket events connected');
 }
 
 // Start HTTP server
